@@ -39,24 +39,24 @@ def extract_ark_text(result: dict) -> str:
     return result.get("output_text", "")
 
 
-SYSTEM_PROMPT = """你是 DeskMind，一个专业的桌面人格分析 AI。
+SYSTEM_PROMPT = """你是 DeskMind，一个毒舌幽默的桌面人格分析 AI，文案风格有梗、接地气、带互联网黑话。
 你会分析用户桌面照片，识别物品、推理行为模式，生成人格报告和改造建议。
 
 你必须只返回一个严格的 JSON 对象，不要有任何其他文字、代码块标记或解释：
 
 {
   "persona": {
-    "badge": "简短标签（4-8字，如：DDL燃烧流）",
-    "title": "人格标题（8-15字，如：凌晨型DDL战士）",
-    "roast": "AI犀利点评（30-80字，根据指定口吻调整语气）"
+    "badge": "人格标签（必须从下方列表精确选一个，如：DDL冲锋侠）",
+    "title": "人格副标题（8-16字，幽默有梗，如：截止日期是我的闹钟）",
+    "roast": "AI犀利点评（40-100字，根据指定口吻调整语气，要幽默有梗）"
   },
   "scores": {
-    "focus": 0到100的整数,
-    "stress": 0到100的整数,
-    "health": 0到100的整数
+    "moyu": 0到100的整数（摸鱼指数，越高越摸鱼），
+    "guolao": 0到100的整数（过劳指数，越高越过劳），
+    "xuming": 0到100的整数（续命能力，越高越能扛）
   },
   "scene": ["场景观察1（描述看到的物品及空间关系）", "场景观察2", "场景观察3", "场景观察4", "场景观察5"],
-  "behavior": ["行为模式推理1", "行为模式推理2", "行为模式推理3", "行为模式推理4"],
+  "behavior": ["行为模式推理1（幽默表达）", "行为模式推理2", "行为模式推理3", "行为模式推理4"],
   "advice": ["具体改造建议1", "具体改造建议2", "具体改造建议3", "具体改造建议4", "具体改造建议5"],
   "shopping": ["推荐购买物品1（简短品类名）", "推荐购买物品2", "推荐购买物品3", "推荐购买物品4"],
   "detected_signals": ["从以下列表中选择识别到的物品id"]
@@ -66,19 +66,23 @@ detected_signals 只能从以下 id 列表中选择（选你在图中真正看�
 coffee, meds, keyboard, multiScreen, books, snacks, takeout, smoke, water, lamp, trash, bedDesk, cables, sticky, anime, plant, storage, gamepad
 
 评分标准：
-- focus（专注度）：桌面整洁、物品专一、无干扰 → 高分；杂乱、娱乐物品多 → 低分
-- stress（压力指数）：药品、咖啡、外卖、便签堆叠、垃圾 → 高分；整洁有序 → 低分
-- health（健康风险）：烟、药品、外卖、床桌混用、无水杯 → 高分；有水杯、绿植 → 低分
+- moyu（摸鱼指数）：游戏手柄、零食、手办、外卖、床桌混用、垃圾 → 高分；书、便签、键盘、水杯 → 低分
+- guolao（过劳指数）：咖啡、药品、烟、外卖、便签堆叠、垃圾、线缆混乱 → 高分；整洁+绿植+收纳 → 低分
+- xuming（续命能力）：水杯、绿植、收纳整洁、台灯合理 → 高分；烟、药品、无水杯、外卖、床桌混用 → 低分
 
-人格类型参考（可原创）：
-- DDL燃烧流：咖啡+便签+高压
-- 科研工程战士：多屏+键盘+资料
-- 极简效率流：整洁+收纳+专注
-- 高压续航型：药品/烟+疲劳信号
-- 二次元逃避型：手办+游戏设备
-- 外卖陪跑型：外卖+床桌混用
-- 夜猫创作型：台灯+多屏+晚间氛围
-- 咖啡因战士：多杯咖啡+高强度工作痕迹"""
+人格类型（badge 字段只能从这10个中精确选一个，一字不差）：
+- DDL冲锋侠：咖啡+便签+高压截止日期
+- 上岸突击手：备考资料+水+专注+低摸鱼
+- 二次元御宅族：手办/贴纸+二次元周边
+- 学霸绝缘体：书多但容易分心、效率偏低
+- 懒人摆烂党：外卖盒/垃圾+无组织迹象
+- 摸鱼大师：高摸鱼指数、分心设备多
+- 游戏牢玩家：游戏手柄+多屏+沉浸式娱乐
+- 熬夜养生矛盾体：台灯+咖啡或药品+水杯（养生与熬夜并存）
+- 躺平随缘人：床桌混用或整体过劳指数极低
+- 追星狂热粉：手办/周边+零食或便签（追星应援氛围）
+
+如果图中线索不明确，优先选最接近的，不要自创新类型。"""
 
 
 class AnalyzeRequest(BaseModel):
@@ -227,13 +231,13 @@ async def analyze(req: AnalyzeRequest):
 
     # Validate and fill defaults
     analysis.setdefault("persona", {})
-    analysis["persona"].setdefault("badge", "未知类型")
+    analysis["persona"].setdefault("badge", "摸鱼大师")
     analysis["persona"].setdefault("title", "神秘桌面主人")
-    analysis["persona"].setdefault("roast", "AI 暂时看不透你的桌面。")
-    analysis.setdefault("scores", {"focus": 60, "stress": 50, "health": 40})
-    analysis["scores"].setdefault("focus", 60)
-    analysis["scores"].setdefault("stress", 50)
-    analysis["scores"].setdefault("health", 40)
+    analysis["persona"].setdefault("roast", "AI 暂时看不透你的桌面，但你的摸鱼技术已经炉火纯青。")
+    analysis.setdefault("scores", {"moyu": 45, "guolao": 50, "xuming": 55})
+    analysis["scores"].setdefault("moyu", 45)
+    analysis["scores"].setdefault("guolao", 50)
+    analysis["scores"].setdefault("xuming", 55)
     analysis.setdefault("scene", [])
     analysis.setdefault("behavior", [])
     analysis.setdefault("advice", [])
@@ -241,10 +245,146 @@ async def analyze(req: AnalyzeRequest):
     analysis.setdefault("detected_signals", [])
 
     # Clamp scores to 0-100
-    for key in ["focus", "stress", "health"]:
-        analysis["scores"][key] = max(0, min(100, int(analysis["scores"][key])))
+    for key in ["moyu", "guolao", "xuming"]:
+        val = analysis["scores"].get(key, 50)
+        analysis["scores"][key] = max(0, min(100, int(val)))
 
     return analysis
+
+
+class ShoppingRequest(BaseModel):
+    items: list
+    api_key: Optional[str] = None
+    model: str = "doubao-seed-2-0-lite-260428"
+    api_base: str = "https://ark.cn-beijing.volces.com/api/v3"
+
+
+def _build_fallback_items(items: list) -> list:
+    """Generate search-URL items when AI call is unavailable."""
+    from urllib.parse import quote
+    result = []
+    platforms = [
+        ("淘宝", "https://s.taobao.com/search?q={}"),
+        ("京东", "https://search.jd.com/Search?keyword={}"),
+        ("拼多多", "https://mobile.pinduoduo.com/search_result.html?search_key={}"),
+    ]
+    for i, item in enumerate(items[:8]):
+        plat_name, url_tmpl = platforms[i % len(platforms)]
+        result.append({
+            "name": item,
+            "desc": "点击搜索同类商品",
+            "platform": plat_name,
+            "link": url_tmpl.format(quote(item)),
+            "price": "",
+        })
+    return result
+
+
+@app.post("/api/shopping")
+async def shopping(req: ShoppingRequest):
+    api_key = req.api_key or os.getenv("API_KEY", "")
+    if not api_key:
+        raise HTTPException(status_code=400, detail="未配置 API Key。")
+
+    items_str = "、".join(req.items[:8])
+    prompt = f"""你是购物推荐助手。请根据以下桌面改善商品品类，给出购买建议。
+
+商品列表：{items_str}
+
+对每个商品，返回一个 JSON 数组（不要有任何其他文字）：
+
+[
+  {{
+    "name": "商品品类名（简短，与输入一致）",
+    "desc": "10字内买点说明",
+    "platform": "淘宝 或 京东 或 拼多多",
+    "search_keyword": "推荐搜索关键词（更精准的搜索词）",
+    "price": "大概价格区间，如 ¥20–50"
+  }}
+]
+
+只返回 JSON 数组，不要解释。"""
+
+    api_base = req.api_base.rstrip("/")
+    model = req.model
+
+    if is_ark_api(api_base):
+        api_url = f"{api_base}/responses"
+        payload = {
+            "model": model,
+            "input": [
+                {
+                    "role": "user",
+                    "content": [{"type": "input_text", "text": prompt}],
+                }
+            ],
+        }
+    else:
+        api_url = f"{api_base}/chat/completions"
+        payload = {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 800,
+            "temperature": 0.3,
+        }
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                api_url,
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+            )
+    except (httpx.TimeoutException, httpx.RequestError):
+        return _build_fallback_items(req.items)
+
+    if response.status_code != 200:
+        return _build_fallback_items(req.items)
+
+    result = response.json()
+    if is_ark_api(api_base):
+        content = extract_ark_text(result).strip()
+    else:
+        content = result["choices"][0]["message"]["content"].strip()
+
+    content = re.sub(r"^```(?:json)?\s*", "", content)
+    content = re.sub(r"\s*```$", "", content)
+
+    arr_match = re.search(r"\[[\s\S]*\]", content)
+    if not arr_match:
+        return _build_fallback_items(req.items)
+
+    try:
+        items_out = json.loads(arr_match.group())
+    except json.JSONDecodeError:
+        return _build_fallback_items(req.items)
+
+    from urllib.parse import quote
+    cleaned = []
+    for it in items_out[:8]:
+        if not isinstance(it, dict):
+            continue
+        name = it.get("name", "商品")
+        keyword = it.get("search_keyword") or name
+        platform = it.get("platform", "淘宝")
+        if "京东" in platform:
+            link = f"https://search.jd.com/Search?keyword={quote(keyword)}"
+        elif "拼多多" in platform:
+            link = f"https://mobile.pinduoduo.com/search_result.html?search_key={quote(keyword)}"
+        else:
+            link = f"https://s.taobao.com/search?q={quote(keyword)}"
+        cleaned.append({
+            "name": name,
+            "desc": it.get("desc", ""),
+            "platform": platform,
+            "link": link,
+            "price": it.get("price", ""),
+        })
+
+    return cleaned if cleaned else _build_fallback_items(req.items)
 
 
 @app.get("/api/health")

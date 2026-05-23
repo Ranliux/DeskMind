@@ -393,120 +393,275 @@ select {
 }
 
 .share-card-header strong {
-  max-width: 52%;
-  overflow: hidden;
-  color: var(--teal-dark);
-  text-overflow: ellipsis;
+  padding: 4px 14px;
+  background: rgba(232, 93, 79, 0.1);
+  border: 1.5px solid rgba(232, 93, 79, 0.32);
+  border-radius: 999px;
+  color: var(--coral);
+  font-size: 0.86rem;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55%;
 }
 
-.share-card h2 {
-  font-size: clamp(1.9rem, 4vw, 3.5rem);
+/* ── Share card: image on top, text below ── */
+.share-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+/* ── Persona avatar: full card width, tall, contain ── */
+.persona-avatar {
+  width: 100%;
+  height: 300px;
+  flex: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(160deg,
+    rgba(15, 139, 141, 0.16) 0%,
+    rgba(76, 149, 108, 0.08) 60%,
+    rgba(15, 139, 141, 0.05) 100%);
+  border: 1.5px solid rgba(15, 139, 141, 0.22);
+  box-shadow: 0 8px 28px rgba(23, 32, 29, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.persona-avatar img {
+  display: block;
+  /* fill the full container, scale proportionally from center bottom */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  transition: opacity 280ms ease;
+}
+
+/* ── Persona info: directly below image ── */
+.persona-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.persona-label {
+  display: block;
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.persona-name-big {
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  font-weight: 900;
   line-height: 1;
+  margin: 0 0 6px;
+  color: var(--coral);
+  /* slight glow for emphasis */
+  text-shadow: 0 0 28px rgba(232, 93, 79, 0.22);
 }
 
 .persona-title {
-  margin: 10px 0 14px;
-  color: var(--coral);
-  font-size: clamp(1.2rem, 2vw, 1.7rem);
-  font-weight: 900;
+  margin: 0 0 10px;
+  color: var(--teal-dark);
+  font-size: clamp(0.88rem, 1.4vw, 1.1rem);
+  font-weight: 800;
+  line-height: 1.3;
 }
 
 .roast {
-  max-width: 64ch;
+  max-width: 52ch;
   margin: 0;
-  color: #34413e;
+  padding: 10px 13px;
+  background: rgba(232, 93, 79, 0.08);
+  border-left: 4px solid rgba(232, 93, 79, 0.6);
+  border-radius: 0 8px 8px 0;
+  color: #c94b3f;
   font-size: 1rem;
-  line-height: 1.7;
+  font-weight: 800;
+  line-height: 1.65;
+  font-style: italic;
 }
+
+
+/* ─── Fun Metrics (Block Bar Style) ─────────────────────────────────────────── */
 
 .metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 24px;
+  gap: 8px;
+  margin-top: 14px;
 }
 
-.metrics article {
+.metric-block {
   min-width: 0;
-  padding: 14px;
+  padding: 7px 11px;
   border: 1px solid rgba(23, 32, 29, 0.08);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.68);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.72);
 }
 
-.metrics span,
-.metrics strong {
+.metric-label {
   display: block;
-}
-
-.metrics article > span {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 800;
+  margin-bottom: 7px;
+  white-space: nowrap;
 }
 
-.metrics strong {
-  margin: 8px 0 10px;
-  font-size: 1.9rem;
-  line-height: 1;
+.block-bar-text {
+  font-family: "Courier New", "Consolas", "Menlo", monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: var(--blue);
+  word-break: break-all;
+  transition: color 300ms ease;
 }
 
-.meter {
-  overflow: hidden;
-  height: 8px;
-  border-radius: 999px;
-  background: rgba(23, 32, 29, 0.12);
+.block-bar-text.danger {
+  color: var(--coral);
 }
 
-.meter span {
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--leaf);
-  transition: width 500ms ease;
+.block-bar-text.xuming {
+  color: var(--leaf);
 }
 
-.meter.danger span {
-  background: var(--coral);
-}
-
-.meter.warning span {
-  background: var(--amber);
+.block-bar-text.moyu {
+  color: var(--blue);
 }
 
 .result-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
+  opacity: 0.82;
 }
 
 .result-card {
   min-width: 0;
-  padding: 18px;
-  border: 1px solid rgba(23, 32, 29, 0.08);
+  padding: 13px 14px;
+  border: 1px solid rgba(23, 32, 29, 0.07);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.62);
 }
 
 .result-card.wide {
   grid-column: 1 / -1;
 }
 
+/* Visually de-emphasise the 改造方案 card */
+.result-card.wide:has(#adviceList) {
+  background: rgba(255, 255, 255, 0.46);
+  border-style: dashed;
+}
+
 .result-card h3 {
-  margin: 0 0 12px;
-  font-size: 1rem;
+  margin: 0 0 8px;
+  font-size: 0.84rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .result-card ul,
 .result-card ol {
   display: grid;
+  gap: 7px;
+  margin: 0;
+  padding-left: 18px;
+  color: #33403d;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+/* ─── Shopping Links ─────────────────────────────────────────────────────────── */
+
+.shopping-searching {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 8px;
+}
+
+.shopping-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px;
   margin: 0;
-  padding-left: 20px;
-  color: #33403d;
-  line-height: 1.55;
+  padding: 0;
+  list-style: none;
 }
+
+.shopping-item {
+  padding: 0;
+}
+
+.shopping-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  height: 100%;
+}
+
+.shopping-link:hover {
+  border-color: var(--teal);
+  box-shadow: 0 4px 14px rgba(15, 139, 141, 0.12);
+  transform: translateY(-2px);
+}
+
+.shopping-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.shopping-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.shopping-price {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--coral);
+}
+
+.shopping-platform {
+  font-size: 0.76rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(15, 139, 141, 0.1);
+  color: var(--teal-dark);
+  font-weight: 500;
+}
+
+.shopping-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ─── Toast ─────────────────────────────────────────────────────────────────── */
 
 .toast {
   position: fixed;
@@ -562,7 +717,6 @@ select {
 
   .controls-row,
   .signal-toolbar,
-  .metrics,
   .result-grid {
     grid-template-columns: 1fr;
   }
@@ -577,11 +731,29 @@ select {
   }
 
   .metrics {
-    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .persona-avatar {
+    height: 240px;
+  }
+
+  .persona-name-big {
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
   }
 
   .photo-actions {
     align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .persona-avatar {
+    height: 210px;
   }
 
   .file-button {

@@ -179,29 +179,34 @@
         <div class="share-card" id="shareCard">
           <div class="share-card-header">
             <span>DeskMind Report</span>
-            <strong id="personaBadge">DDL 燃烧流</strong>
+            <strong id="personaBadge">DDL冲锋侠</strong>
           </div>
-          <h2 id="resultTitle">你的桌面人格</h2>
-          <p class="persona-title" id="personaTitle">凌晨型 DDL 战士</p>
-          <p class="roast" id="roastText">
-            你的桌面像一台正在超频的学习机器：咖啡负责点火，便签负责焦虑，线缆负责制造剧情。
-          </p>
+          <div class="share-card-body">
+            <div class="persona-avatar">
+              <img id="personaImage" src="assets/DDL冲锋侠.png" alt="DDL冲锋侠 角色图" />
+            </div>
+            <div class="persona-info">
+              <span class="persona-label" id="resultTitle">你的桌面人格</span>
+              <div class="persona-name-big" id="personaNameBig">DDL冲锋侠</div>
+              <p class="persona-title" id="personaTitle">截止日期是我的闹钟</p>
+              <p class="roast" id="roastText">
+                你的桌面是战场废墟：咖啡是弹药，便签是遗书，线缆是战壕铁丝网。
+              </p>
+            </div>
+          </div>
 
           <div class="metrics" aria-label="桌面状态指标">
-            <article>
-              <span>专注度</span>
-              <strong id="focusScore">74</strong>
-              <div class="meter"><span id="focusMeter"></span></div>
+            <article class="metric-block">
+              <span class="metric-label">🐟 摸鱼指数</span>
+              <div class="block-bar-text moyu" id="moyuBar">██░░░░░░░░ 20%</div>
             </article>
-            <article>
-              <span>压力指数</span>
-              <strong id="stressScore">68</strong>
-              <div class="meter danger"><span id="stressMeter"></span></div>
+            <article class="metric-block">
+              <span class="metric-label">🔥 过劳指数</span>
+              <div class="block-bar-text danger" id="guolaoBar">████████░░ 82%</div>
             </article>
-            <article>
-              <span>健康风险</span>
-              <strong id="healthScore">51</strong>
-              <div class="meter warning"><span id="healthMeter"></span></div>
+            <article class="metric-block">
+              <span class="metric-label">💊 续命能力</span>
+              <div class="block-bar-text xuming" id="xumingBar">█████░░░░░ 50%</div>
             </article>
           </div>
         </div>
@@ -219,13 +224,9 @@
             <h3>桌面改造方案</h3>
             <ol id="adviceList"></ol>
           </article>
-          <article class="result-card">
-            <h3>购买清单</h3>
-            <ul id="shoppingList"></ul>
-          </article>
-          <article class="result-card">
-            <h3>下一步 Agent</h3>
-            <ul id="agentList"></ul>
+          <article class="result-card wide" id="shoppingCard">
+            <h3>你可能感兴趣 <span class="shopping-searching" id="shoppingSpinner" hidden>🔍 正在搜索商品…</span></h3>
+            <ul class="shopping-list" id="shoppingList"></ul>
           </article>
         </div>
       </section>

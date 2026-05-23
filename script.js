@@ -15,7 +15,7 @@ const signals = [
   {
     id: "coffee",
     label: "咖啡/能量饮料",
-    weights: { stress: 9, focus: 4, health: 4, share: 4 },
+    weights: { moyu: -10, guolao: 15, xuming: -6 },
     scene: "饮品靠近键盘，推测存在长时间连续学习或工作。",
     behavior: "续航方式偏刺激型，容易把精力管理外包给咖啡因。",
     advice: "把咖啡固定在上午或午后早段，晚间改成温水或无糖茶。",
@@ -24,7 +24,7 @@ const signals = [
   {
     id: "meds",
     label: "药品/维生素",
-    weights: { stress: 10, health: 10, share: 2 },
+    weights: { guolao: 14, xuming: -10 },
     scene: "健康相关物品出现在工作区，说明身体状态已经参与桌面系统。",
     behavior: "近期可能在硬扛疲劳、过敏、肠胃或睡眠问题。",
     advice: "把药品移到独立收纳区，并设置明确服用提醒；报告不替代医学诊断。",
@@ -33,7 +33,7 @@ const signals = [
   {
     id: "keyboard",
     label: "机械键盘",
-    weights: { focus: 6, share: 3 },
+    weights: { moyu: -6, guolao: 4 },
     scene: "键盘是桌面中心物，输入密度高。",
     behavior: "你更像执行型选手，靠敲字推进任务。",
     advice: "键盘前方保留一条 8 到 12 厘米腕部缓冲区，降低疲劳。",
@@ -42,7 +42,7 @@ const signals = [
   {
     id: "multiScreen",
     label: "双屏/多屏",
-    weights: { focus: 8, stress: 4, share: 5 },
+    weights: { moyu: -4, guolao: 5 },
     scene: "多屏布局带来明显信息流分区。",
     behavior: "任务切换能力强，但也容易被消息和参考资料分心。",
     advice: "主屏只放当前产出，副屏固定资料或通讯，不要混放。",
@@ -51,7 +51,7 @@ const signals = [
   {
     id: "books",
     label: "课程书/资料",
-    weights: { focus: 7, stress: 5, share: 3 },
+    weights: { moyu: -8, guolao: 6, xuming: 2 },
     scene: "纸质材料占据可见空间，学习任务具备实体痕迹。",
     behavior: "处于输入期，知识吸收量大，阶段性压力偏高。",
     advice: "把正在读的资料和待归档资料分成两叠，减少视觉噪音。",
@@ -60,7 +60,7 @@ const signals = [
   {
     id: "snacks",
     label: "零食",
-    weights: { stress: 4, health: 6, share: 4 },
+    weights: { moyu: 10, guolao: 2, xuming: -3 },
     scene: "即时奖励物靠近工作区。",
     behavior: "压力释放方式偏即时满足，容易越学越想补一口。",
     advice: "把零食移到伸手不可及的位置，只保留一份定量。",
@@ -69,7 +69,7 @@ const signals = [
   {
     id: "takeout",
     label: "外卖盒",
-    weights: { stress: 7, health: 8, share: 5 },
+    weights: { moyu: 6, guolao: 8, xuming: -10 },
     scene: "用餐和工作边界重叠，桌面出现生活功能挤占。",
     behavior: "节奏可能被截止日期推着走，吃饭也变成任务间隙。",
     advice: "每天至少固定一顿离桌吃饭，让大脑知道有真正的休息段。",
@@ -78,7 +78,7 @@ const signals = [
   {
     id: "smoke",
     label: "烟/打火机",
-    weights: { stress: 10, health: 12, share: 3 },
+    weights: { guolao: 14, xuming: -18 },
     scene: "高压缓冲物和学习工作区重叠。",
     behavior: "压力自我调节成本偏高，需要更温和的替代动作。",
     advice: "把烟具移出桌面视线，建立 3 分钟站立伸展替代流程。",
@@ -87,7 +87,7 @@ const signals = [
   {
     id: "water",
     label: "水杯",
-    weights: { focus: 3, health: -5, stress: -2 },
+    weights: { moyu: -2, guolao: -3, xuming: 14 },
     scene: "补水物品处在触手可及的位置。",
     behavior: "你仍然保留了一点自救意识，这点很重要。",
     advice: "把水杯放在非惯用手一侧，降低打翻风险，也能提醒休息。",
@@ -96,7 +96,7 @@ const signals = [
   {
     id: "lamp",
     label: "台灯",
-    weights: { focus: 5, stress: 2, health: -1 },
+    weights: { guolao: 5, xuming: -2 },
     scene: "局部照明出现，夜间学习或精细阅读概率上升。",
     behavior: "你能为专注布置环境，但要小心光线反差带来的眼疲劳。",
     advice: "台灯照向纸面或墙面反射，屏幕亮度与环境亮度保持接近。",
@@ -105,7 +105,7 @@ const signals = [
   {
     id: "trash",
     label: "垃圾/废纸",
-    weights: { stress: 8, health: 4, focus: -5, share: 6 },
+    weights: { moyu: 8, guolao: 8, xuming: -8 },
     scene: "废弃物进入主工作面，桌面维护周期偏长。",
     behavior: "你不是懒，是系统没有给清理动作留入口。",
     advice: "设置一个 30 秒桌面收尾动作：垃圾、杯子、纸张各归一次位。",
@@ -114,7 +114,7 @@ const signals = [
   {
     id: "bedDesk",
     label: "床桌混用",
-    weights: { stress: 6, health: 9, focus: -6, share: 5 },
+    weights: { moyu: 8, guolao: 6, xuming: -10 },
     scene: "休息区与工作区边界不清。",
     behavior: "大脑可能分不清什么时候该冲刺、什么时候该睡觉。",
     advice: "把床只留给休息，至少用一张小桌垫制造工作边界。",
@@ -123,7 +123,7 @@ const signals = [
   {
     id: "cables",
     label: "线缆混乱",
-    weights: { stress: 5, focus: -4, share: 4 },
+    weights: { moyu: 4, guolao: 4 },
     scene: "线缆成为桌面视觉主角之一。",
     behavior: "你的效率被一些很小的摩擦偷偷扣分。",
     advice: "把常用线固定在桌沿，临时线放进一只透明收纳盒。",
@@ -132,7 +132,7 @@ const signals = [
   {
     id: "sticky",
     label: "便签/Todo",
-    weights: { focus: 7, stress: 5, share: 3 },
+    weights: { moyu: -5, guolao: 6 },
     scene: "任务外化到桌面，说明你在主动管理压力。",
     behavior: "适合清单驱动，但清单过多会从工具变成噪音。",
     advice: "只保留今日三件事，其余任务移到数字列表或本子背页。",
@@ -141,7 +141,7 @@ const signals = [
   {
     id: "anime",
     label: "手办/贴纸",
-    weights: { share: 8, focus: 2, stress: -1 },
+    weights: { moyu: 8, guolao: -2, xuming: 5 },
     scene: "个人兴趣物品占据可见区域。",
     behavior: "你需要一点精神充电物，审美是桌面系统的一部分。",
     advice: "保留一个视觉锚点即可，其他收藏转移到侧边展示区。",
@@ -150,7 +150,7 @@ const signals = [
   {
     id: "plant",
     label: "绿植",
-    weights: { health: -4, stress: -4, focus: 2, share: 3 },
+    weights: { moyu: 2, guolao: -4, xuming: 12 },
     scene: "自然元素进入工作区，空间有恢复性线索。",
     behavior: "你在给高压环境留呼吸口，这是成熟的布置。",
     advice: "让绿植靠近自然光，但不要挤占鼠标和书写区域。",
@@ -159,7 +159,7 @@ const signals = [
   {
     id: "storage",
     label: "收纳盒",
-    weights: { focus: 5, stress: -3, health: -2 },
+    weights: { moyu: -4, guolao: -2, xuming: 6 },
     scene: "物品已经有归属容器，桌面可恢复性较好。",
     behavior: "你不是极简主义者，但你知道秩序能换回脑容量。",
     advice: "把收纳盒分成高频、低频、补给三类，不要混装。",
@@ -168,7 +168,7 @@ const signals = [
   {
     id: "gamepad",
     label: "游戏手柄",
-    weights: { share: 5, focus: -2, stress: -2 },
+    weights: { moyu: 20, guolao: -4, xuming: 3 },
     scene: "娱乐设备与任务设备共处一桌。",
     behavior: "你需要奖励机制，但边界感决定它是回血还是分心。",
     advice: "完成一个番茄钟后再把手柄移到桌面中央，形成奖励仪式。",
@@ -178,73 +178,132 @@ const signals = [
 
 const defaultSelected = ["coffee", "keyboard", "books", "water", "lamp", "cables", "sticky"];
 
+// ─── Persona Definitions ──────────────────────────────────────────────────────
+// 每个人格对应 assets/ 中的图片，match 按顺序优先匹配。
+
 const personas = [
   {
-    id: "deadline",
-    badge: "DDL 燃烧流",
-    title: "凌晨型 DDL 战士",
-    match: (selected, scores, goal) =>
-      selected.has("coffee") && (selected.has("sticky") || selected.has("books")) && scores.stress >= 58 && goal !== "rest",
+    id: "youxi",
+    badge: "游戏牢玩家",
+    title: "肝游戏比上班还认真",
+    image: "assets/游戏牢玩家.png",
+    match: (sel) => sel.has("gamepad") && sel.has("multiScreen"),
     roasts: {
-      sharp: "你的桌面像一台正在超频的学习机器：咖啡负责点火，便签负责焦虑，线缆负责制造剧情。",
-      gentle: "你把很多任务都扛在桌面上了。它确实努力，但也在提醒你该给自己留一点缓冲。",
-      coach: "当前桌面适合短冲刺，不适合长续航。把任务收束成三件事，效率会明显提升。"
+      sharp: "双屏+手柄+零食一字排开，你的桌面是个电竞训练营。攻略背得比课本还熟，段位还没毕业证好看。",
+      gentle: "沉浸式的热情是很宝贵的特质，把这股劲分一点给现实任务，你会所向无敌的。",
+      coach: "把游戏时间设为每日目标完成后的奖励，效率会神奇地提升。"
     }
   },
   {
-    id: "research",
-    badge: "科研工程战士",
-    title: "INTJ 型科研战士",
-    match: (selected) => selected.has("multiScreen") && selected.has("keyboard") && selected.has("books"),
+    id: "zhuixing",
+    badge: "追星狂热粉",
+    title: "爱豆是我的续命良药",
+    image: "assets/追星狂热粉.png",
+    match: (sel) => sel.has("anime") && (sel.has("snacks") || sel.has("sticky")),
     roasts: {
-      sharp: "你的桌面不像桌面，像一个小型控制台。下一步可能不是整理，是给自己发工牌。",
-      gentle: "你很擅长把复杂任务摊开处理，只要减少切屏诱惑，就会更稳。",
-      coach: "多屏价值在于分区。主屏产出、副屏参考、手机远离，是你这套系统的最优解。"
+      sharp: "桌面一半是应援物料，一半是还没做的作业，爱豆的新专给了你活下去的勇气——但作业还是要交的。",
+      gentle: "热爱是你的能量来源，把这份热情分一点给当前任务，你会惊喜的。",
+      coach: "完成一项任务就给自己一点追星时间，把热情变成最强激励机制。"
     }
   },
   {
-    id: "minimal",
-    badge: "极简效率流",
-    title: "冷静型效率玩家",
-    match: (selected, scores) =>
-      selected.has("storage") && selected.has("water") && !selected.has("trash") && !selected.has("takeout") && scores.focus >= 70,
+    id: "erciyan",
+    badge: "二次元御宅族",
+    title: "二次元永远的神",
+    image: "assets/二次元御宅族.png",
+    match: (sel) => sel.has("anime"),
     roasts: {
-      sharp: "你这桌面干净得像刚结束一场产品发布会，唯一的问题是别人会觉得你没有生活。",
-      gentle: "你的桌面秩序感很强，适合持续产出，也有恢复空间。",
-      coach: "继续保留低干扰布局，把高频物品压缩到一臂范围内即可。"
+      sharp: "手办站满桌，爱好和功课争地盘，爱好完胜。你的二次元老婆比作业更有吸引力，AI表示理解。",
+      gentle: "把热爱放在桌面上，说明你有自己的精神角落，这比什么都珍贵。",
+      coach: "把手办移到视野边缘当完成任务的奖励，完成一件事才能看它一眼。"
     }
   },
   {
-    id: "health",
-    badge: "高压续航型",
-    title: "健康警报边缘人",
-    match: (selected, scores) => selected.has("meds") || selected.has("smoke") || scores.health >= 70,
+    id: "ddl",
+    badge: "DDL冲锋侠",
+    title: "截止日期是我的闹钟",
+    image: "assets/DDL冲锋侠.png",
+    match: (sel, scores, goal) =>
+      (sel.has("coffee") && sel.has("sticky")) ||
+      (sel.has("books") && scores.guolao >= 65 && goal !== "rest"),
     roasts: {
-      sharp: "你的桌面已经不是学习状态，是身体在给项目开风险会。",
-      gentle: "桌面上出现了不少疲劳信号。先照顾身体，任务才有长期胜算。",
-      coach: "优先做健康降噪：补水、离桌吃饭、固定睡前 30 分钟收尾。"
+      sharp: "你的桌面是战场废墟：咖啡是弹药，便签是遗书，线缆是战壕铁丝网。DDL不是在追你，你已经被追上了。",
+      gentle: "你很拼，桌面上每一样东西都是你努力的证明。记得在冲刺间隙给自己留一口气。",
+      coach: "DDL 前 12 小时：关掉所有通知，只保留当前任务，你能冲的。"
     }
   },
   {
-    id: "escape",
-    badge: "兴趣回血型",
-    title: "二次元逃避型创作家",
-    match: (selected) => selected.has("anime") || selected.has("gamepad"),
+    id: "aoyeyangshen",
+    badge: "熬夜养生矛盾体",
+    title: "一边熬夜一边喝枸杞",
+    image: "assets/熬夜养生矛盾体.png",
+    match: (sel) => sel.has("lamp") && (sel.has("coffee") || sel.has("meds")) && sel.has("water"),
     roasts: {
-      sharp: "你的桌面一半在学习，一半在给大脑递逃生通道。",
-      gentle: "兴趣物品不是问题，它们是能量来源。关键是给它们合适的位置。",
-      coach: "把兴趣物当作完成任务后的视觉奖励，而不是任务开始前的注意力入口。"
+      sharp: "台灯亮到凌晨三点，水杯里泡着枸杞，保温杯旁放着咖啡——你的养生和熬夜在赛跑，目前熬夜遥遥领先。",
+      gentle: "你在用力照顾自己，只是时间表有点混乱。试着把灯熄得早一点，从今晚开始？",
+      coach: "最有效的养生：睡前1小时关屏幕，比任何保健品都管用，还免费。"
     }
   },
   {
-    id: "takeout",
-    badge: "外卖陪跑型",
-    title: "生活工作混流选手",
-    match: (selected) => selected.has("takeout") || selected.has("bedDesk"),
+    id: "shanggan",
+    badge: "上岸突击手",
+    title: "不上岸誓不罢休",
+    image: "assets/上岸突击手.png",
+    match: (sel, scores, goal) =>
+      sel.has("books") && sel.has("water") && scores.moyu <= 22 && goal === "study",
     roasts: {
-      sharp: "你的桌面正在兼职餐桌、床头柜和战场，工资还一分没有。",
-      gentle: "你最近可能真的很忙。先把吃饭和休息从任务里救出来。",
-      coach: "建立空间边界会立刻提升专注：吃饭离桌，休息离屏，工作区只留当前任务。"
+      sharp: "资料摞到天花板，水杯还在，说明你还没放弃。上岸之前先别沉没，记得抬头换换气。",
+      gentle: "你的备考状态很稳，桌面在告诉所有人：你是认真的。坚持就是答案。",
+      coach: "备考建议：每 90 分钟强制离桌 5 分钟，不是休息，是对大脑的投资。"
+    }
+  },
+  {
+    id: "moyu",
+    badge: "摸鱼大师",
+    title: "工作是副业，摸鱼才是主业",
+    image: "assets/摸鱼大师.png",
+    match: (sel, scores) => scores.moyu >= 55,
+    roasts: {
+      sharp: "你的桌面告诉我：你上班时在摸鱼，摸鱼时在想上班。你已经进入量子叠加态，薛定谔的打工人。",
+      gentle: "适当放松是生产力的一部分，不要太苛责自己——但也别让任务等太久。",
+      coach: "试试番茄工作法：25 分钟专注，5 分钟合法摸鱼。把摸鱼变成制度化奖励。"
+    }
+  },
+  {
+    id: "xueba",
+    badge: "学霸绝缘体",
+    title: "书买了就等于看了",
+    image: "assets/学霸绝缘体.png",
+    match: (sel, scores) =>
+      sel.has("books") && scores.moyu >= 30 && !sel.has("anime"),
+    roasts: {
+      sharp: "书买了，荧光笔备好了，知识愣是没进脑子。你在表演学习，还是学习表演？桌面看不出区别。",
+      gentle: "你愿意备好所有工具，说明你有意愿。找到让你真正投入的方法，就差最后一步。",
+      coach: "试试主动回忆法：合上书，在纸上写下刚才记住的，效率直接提升 50%。"
+    }
+  },
+  {
+    id: "lanren",
+    badge: "懒人摆烂党",
+    title: "躺着也能摆出花",
+    image: "assets/懒人摆烂党.png",
+    match: (sel) => sel.has("trash") || sel.has("takeout"),
+    roasts: {
+      sharp: "你的桌面是摆烂的艺术品，外卖盒和垃圾构成了今日的装置艺术。AI向你的放弃治疗表示崇高敬意。",
+      gentle: "有时候放松也是一种充电。但如果明天有事，今晚先清一下桌面？",
+      coach: "先做一件事：把垃圾扔掉。就这一件。剩下的事情会自动变容易，信我。"
+    }
+  },
+  {
+    id: "tangping",
+    badge: "躺平随缘人",
+    title: "随缘就是最强的力量",
+    image: "assets/躺平随缘人.png",
+    match: (sel, scores) => sel.has("bedDesk") || scores.guolao <= 25,
+    roasts: {
+      sharp: "你和床合并成了一个工作单元，这不叫工作，叫卧薪尝胆——薪柴就是被窝，胆是闹钟。",
+      gentle: "放慢脚步也是一种选择，你的桌面透露出一种别人羡慕的从容。随缘也是一种哲学。",
+      coach: "哪怕只是把床和桌子的边界分开，你的效率就会有可见提升，试试看。"
     }
   }
 ];
@@ -252,12 +311,31 @@ const personas = [
 const fallbackPersona = {
   badge: "混合生存流",
   title: "多线程桌面玩家",
+  image: "assets/sample-desk.png",
   roasts: {
-    sharp: "你的桌面不是乱，是很多个你同时在线，只是还没开会同步。",
-    gentle: "这个桌面能看出你在努力处理多件事。稍微分区后，会轻松很多。",
+    sharp: "你的桌面不是乱，是很多个你同时在线还没开会同步。AI 看不透你，给你封神了。",
+    gentle: "这个桌面透着一股多元化的气质，啥都有，啥都不完整，但你在努力。",
     coach: "先分出产出区、资料区、补给区，其他优化都可以排在后面。"
   }
 };
+
+// ─── Persona Image Map (for AI mode badge→image lookup) ───────────────────────
+
+function getPersonaImage(badge) {
+  const imageMap = {
+    "DDL冲锋侠": "assets/DDL冲锋侠.png",
+    "上岸突击手": "assets/上岸突击手.png",
+    "二次元御宅族": "assets/二次元御宅族.png",
+    "学霸绝缘体": "assets/学霸绝缘体.png",
+    "懒人摆烂党": "assets/懒人摆烂党.png",
+    "摸鱼大师": "assets/摸鱼大师.png",
+    "游戏牢玩家": "assets/游戏牢玩家.png",
+    "熬夜养生矛盾体": "assets/熬夜养生矛盾体.png",
+    "躺平随缘人": "assets/躺平随缘人.png",
+    "追星狂热粉": "assets/追星狂热粉.png",
+  };
+  return imageMap[badge] || "assets/sample-desk.png";
+}
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
@@ -301,7 +379,6 @@ function loadConfig() {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) {
       const saved = JSON.parse(raw);
-      // If previously saved without a key, fall back to the built-in default
       if (!saved.apiKey) saved.apiKey = DEFAULT_CONFIG.apiKey;
       return { ...DEFAULT_CONFIG, ...saved };
     }
@@ -420,6 +497,19 @@ function showToast(message) {
   window.setTimeout(() => toast.classList.remove("show"), 2800);
 }
 
+// ─── Block Bar Renderer ───────────────────────────────────────────────────────
+
+function blockBarText(value) {
+  const total = 10;
+  const filled = Math.round(clamp(value) / 10);
+  return "█".repeat(filled) + "░".repeat(total - filled) + " " + value + "%";
+}
+
+function setBlockBar(barId, value) {
+  const el = document.querySelector(barId);
+  if (el) el.textContent = blockBarText(value);
+}
+
 // ─── Signal Controls ─────────────────────────────────────────────────────────
 
 function createSignalControls() {
@@ -448,59 +538,60 @@ function getSignal(id) {
 // ─── Local Analysis ───────────────────────────────────────────────────────────
 
 function calculateScores(selected) {
-  const base = { focus: 58, stress: 34, health: 28, share: 44 };
+  const base = { moyu: 35, guolao: 30, xuming: 55 };
 
   selected.forEach((id) => {
     const signal = getSignal(id);
     if (!signal) return;
     Object.entries(signal.weights).forEach(([key, value]) => {
-      base[key] += value;
+      if (key in base) base[key] += value;
     });
   });
 
-  const selectedCount = selected.size;
-  base.stress += Math.max(0, selectedCount - 8) * 3;
-  base.focus -= Math.max(0, selectedCount - 10) * 3;
+  const count = selected.size;
+  base.guolao += Math.max(0, count - 8) * 3;
+  base.moyu += Math.max(0, count - 10) * 2;
 
   return {
-    focus: clamp(base.focus),
-    stress: clamp(base.stress),
-    health: clamp(base.health),
-    share: clamp(base.share)
+    moyu: clamp(base.moyu),
+    guolao: clamp(base.guolao),
+    xuming: clamp(base.xuming),
   };
 }
 
 function pickPersona(selected, scores, goal) {
-  return personas.find((persona) => persona.match(selected, scores, goal)) || fallbackPersona;
+  return personas.find((p) => p.match(selected, scores, goal)) || fallbackPersona;
 }
 
 function buildBehavior(selected, scores, goal) {
   const lines = [];
 
-  if (scores.stress >= 70) {
-    lines.push("压力指数偏高，桌面正在替你承载过多未关闭任务。");
-  } else if (scores.stress <= 42) {
-    lines.push("压力信号可控，当前桌面更像稳定产出场。");
+  if (scores.guolao >= 70) {
+    lines.push("过劳指数爆表，桌面正在替你承载所有未关闭的任务，快去喝点水歇一歇。");
+  } else if (scores.guolao <= 30) {
+    lines.push("过劳信号可控，当前桌面更像一个稳定产出场，节奏不错，继续保持。");
   } else {
-    lines.push("压力处于中段，适合通过小整理换回注意力。");
+    lines.push("过劳程度中等，适当整理一下桌面能换回不少注意力。");
   }
 
-  if (scores.focus >= 72) {
-    lines.push("专注线索强，适合深度阅读、写作、编程或备考。");
-  } else if (scores.focus <= 48) {
-    lines.push("专注度被环境摩擦削弱，容易开始很多事却难以收束。");
+  if (scores.moyu <= 20) {
+    lines.push("摸鱼指数极低，你已进入高强度专注模式，记得给自己留点喘息空间。");
+  } else if (scores.moyu >= 60) {
+    lines.push("摸鱼指数偏高，桌面上有太多让你分心的东西，任务在等你回来。");
   } else {
-    lines.push("专注力有基础，但需要减少边缘物品的视觉拉扯。");
+    lines.push("专注力有基础，但需要减少边缘物品的视觉拉扯，才能真正沉下去。");
   }
 
-  if (scores.health >= 64) {
-    lines.push("健康风险值得关注，优先处理睡眠、补水、用餐和眼疲劳。");
+  if (scores.xuming <= 40) {
+    lines.push("续命能力告急！健康风险值得重视，优先处理睡眠、补水、用餐和眼疲劳。");
+  } else if (scores.xuming >= 70) {
+    lines.push("续命能力在线，你的桌面有不少自我维护的痕迹，继续保持。");
   } else {
-    lines.push("健康风险暂时不高，继续保留补水和光线管理。");
+    lines.push("续命能力一般，记得补水和偶尔离桌活动，身体是最后的生产力。");
   }
 
   if (selected.has("multiScreen") || selected.has("keyboard")) {
-    lines.push(goal === "work" ? "专业倾向偏创作/技术执行。" : "专业倾向偏信息密集型学习。");
+    lines.push(goal === "work" ? "专业倾向偏创作/技术执行，你是能把想法变成现实的那种人。" : "专业倾向偏信息密集型学习，书山有路但脑容量有限。");
   }
 
   return lines;
@@ -516,22 +607,22 @@ function buildAdvice(selected, scores, goal) {
     priority.push("把线缆固定到桌沿或桌后，减少视觉混乱和拿取阻力。");
   }
   if (selected.has("bedDesk")) {
-    priority.push("建立休息边界：床上只休息，桌面只处理当前任务。");
+    priority.push("建立休息边界：床上只休息，桌面只处理当前任务，大脑需要空间切换。");
   }
   if (selected.has("sticky") || selected.has("books")) {
-    priority.push("把任务缩成今日三件事，资料按正在用、稍后用、归档分区。");
+    priority.push("把任务缩成今日三件事，资料按正在用、稍后用、归档分区，减少选择焦虑。");
   }
   if (selected.has("lamp")) {
-    priority.push("调整光源角度，让台灯照亮纸面或墙面，避免直射屏幕。");
+    priority.push("调整光源角度，让台灯照亮纸面或墙面，避免直射屏幕伤眼睛。");
   }
-  if (scores.health >= 58) {
-    priority.push("加入每 45 分钟一次的离桌动作：喝水、站立、远眺。");
+  if (scores.guolao >= 60) {
+    priority.push("加入每 45 分钟一次的离桌动作：喝水、站立、远眺，身体会感谢你的。");
   }
 
   const goalAdvice = {
-    study: "学习模式建议 35 分钟输入 + 10 分钟输出，不让阅读停在「看过」。",
-    work: "工作模式建议用主屏产出、侧边参考、手机静音的三分区节奏。",
-    rest: "作息模式建议睡前 30 分钟把桌面收尾，给大脑一个关机信号。"
+    study: "学习模式建议 35 分钟输入 + 10 分钟输出，不让阅读停在「看过」这个层级。",
+    work: "工作模式建议用主屏产出、侧边参考、手机静音的三分区节奏，效率倍增。",
+    rest: "作息模式建议睡前 30 分钟把桌面收尾，给大脑一个明确的关机信号。"
   };
 
   priority.push(goalAdvice[goal]);
@@ -539,18 +630,65 @@ function buildAdvice(selected, scores, goal) {
   return [...new Set(priority)].slice(0, 5);
 }
 
-function buildAgentPlan(selected) {
-  const plan = [
-    "VLM：识别桌面物体、光线、空间关系和混用区域。",
-    "Scene Graph：把物体关系转成可推理节点，例如咖啡靠近键盘、资料压住书写区。",
-    "Agent Planner：按健康、效率、传播性生成报告与行动清单。"
-  ];
+// ─── Shopping Links ───────────────────────────────────────────────────────────
 
-  if (selected.has("meds") || selected.has("smoke")) {
-    plan.push("Safety Agent：对健康相关内容降级为提醒，不输出诊断结论。");
+async function fetchShoppingLinks(items) {
+  if (!items || items.length === 0) return;
+  const config = loadConfig();
+  const spinner = document.querySelector("#shoppingSpinner");
+  spinner.hidden = false;
+
+  try {
+    const response = await fetch("/api/shopping", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items,
+        api_key: config.apiKey,
+        model: config.model || DEFAULT_CONFIG.model,
+        api_base: config.apiBase || DEFAULT_CONFIG.apiBase,
+      }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const results = await response.json();
+    renderShoppingLinks(results);
+  } catch (err) {
+    renderShoppingLinks(
+      items.map((name) => ({
+        name,
+        desc: "点击搜索",
+        platform: "淘宝",
+        link: `https://s.taobao.com/search?q=${encodeURIComponent(name)}`,
+        price: "",
+      }))
+    );
+  } finally {
+    spinner.hidden = true;
   }
+}
 
-  return plan;
+function renderShoppingLinks(results) {
+  const list = document.querySelector("#shoppingList");
+  if (!results || results.length === 0) {
+    list.innerHTML = "<li>暂无推荐商品。</li>";
+    return;
+  }
+  list.innerHTML = results
+    .map(
+      (item) => `
+      <li class="shopping-item">
+        <a class="shopping-link" href="${item.link}" target="_blank" rel="noopener">
+          <span class="shopping-name">${item.name}</span>
+          <span class="shopping-meta">
+            ${item.price ? `<span class="shopping-price">${item.price}</span>` : ""}
+            <span class="shopping-platform">${item.platform}</span>
+          </span>
+          ${item.desc ? `<span class="shopping-desc">${item.desc}</span>` : ""}
+        </a>
+      </li>`
+    )
+    .join("");
 }
 
 // ─── Render Helpers ───────────────────────────────────────────────────────────
@@ -558,11 +696,6 @@ function buildAgentPlan(selected) {
 function renderList(selector, items) {
   const target = document.querySelector(selector);
   target.innerHTML = items.map((item) => `<li>${item}</li>`).join("");
-}
-
-function setMeter(scoreId, meterId, value) {
-  document.querySelector(scoreId).textContent = value;
-  document.querySelector(meterId).style.width = `${value}%`;
 }
 
 // ─── AI API Call ──────────────────────────────────────────────────────────────
@@ -597,28 +730,33 @@ async function callAnalyzeAPI(imageBase64, intent, tone, goal) {
 function renderAIResult(result) {
   const { persona, scores, scene, behavior, advice, shopping, detected_signals } = result;
 
-  document.querySelector("#personaBadge").textContent = persona.badge || "AI 分析";
+  const aibadge = persona.badge || "AI 分析";
+  document.querySelector("#personaBadge").textContent = aibadge;
+  document.querySelector("#personaNameBig").textContent = aibadge;
   document.querySelector("#personaTitle").textContent = persona.title || "桌面人格";
   document.querySelector("#roastText").textContent = persona.roast || "AI 正在思考…";
 
-  setMeter("#focusScore", "#focusMeter", scores.focus ?? 60);
-  setMeter("#stressScore", "#stressMeter", scores.stress ?? 50);
-  setMeter("#healthScore", "#healthMeter", scores.health ?? 40);
+  // Update persona image
+  const imgEl = document.querySelector("#personaImage");
+  imgEl.src = getPersonaImage(persona.badge || "");
+  imgEl.alt = (persona.badge || "人格") + " 角色图";
+
+  setBlockBar("#moyuBar", scores.moyu ?? 40);
+  setBlockBar("#guolaoBar", scores.guolao ?? 50);
+  setBlockBar("#xumingBar", scores.xuming ?? 55);
 
   renderList("#sceneList", scene?.length ? scene : ["AI 未识别到物品，请检查图片质量。"]);
   renderList("#behaviorList", behavior?.length ? behavior : ["暂无行为推理。"]);
   renderList("#adviceList", advice?.length ? advice : ["暂无改造建议。"]);
-  renderList("#shoppingList", shopping?.length ? shopping : ["暂无购买建议。"]);
 
-  // Sync checkboxes with AI-detected signals
   const detectedSet = new Set(detected_signals || []);
   signalGrid.querySelectorAll("input").forEach((input) => {
     input.checked = detectedSet.has(input.value);
   });
 
-  renderList("#agentList", buildAgentPlan(detectedSet));
+  document.querySelector("#shoppingList").innerHTML = "";
+  fetchShoppingLinks(shopping?.length ? shopping : []);
 
-  // Highlight report card
   document.querySelector(".share-card").classList.add("ai-analyzed");
   setTimeout(() => document.querySelector(".share-card").classList.remove("ai-analyzed"), 1200);
 }
@@ -631,12 +769,18 @@ function renderLocalResult(selected, goal, tone) {
   const selectedSignals = [...selected].map(getSignal).filter(Boolean);
 
   document.querySelector("#personaBadge").textContent = persona.badge;
+  document.querySelector("#personaNameBig").textContent = persona.badge;
   document.querySelector("#personaTitle").textContent = persona.title;
   document.querySelector("#roastText").textContent = persona.roasts[tone] || persona.roasts.sharp;
 
-  setMeter("#focusScore", "#focusMeter", scores.focus);
-  setMeter("#stressScore", "#stressMeter", scores.stress);
-  setMeter("#healthScore", "#healthMeter", scores.health);
+  // Update persona image
+  const imgEl = document.querySelector("#personaImage");
+  imgEl.src = persona.image || "assets/sample-desk.png";
+  imgEl.alt = persona.badge + " 角色图";
+
+  setBlockBar("#moyuBar", scores.moyu);
+  setBlockBar("#guolaoBar", scores.guolao);
+  setBlockBar("#xumingBar", scores.xuming);
 
   renderList(
     "#sceneList",
@@ -646,11 +790,10 @@ function renderLocalResult(selected, goal, tone) {
   );
   renderList("#behaviorList", buildBehavior(selected, scores, goal));
   renderList("#adviceList", buildAdvice(selected, scores, goal));
-  renderList(
-    "#shoppingList",
-    [...new Set(selectedSignals.map((s) => s.shopping))].slice(0, 5)
-  );
-  renderList("#agentList", buildAgentPlan(selected));
+
+  const shoppingItems = [...new Set(selectedSignals.map((s) => s.shopping))].slice(0, 6);
+  document.querySelector("#shoppingList").innerHTML = "";
+  fetchShoppingLinks(shoppingItems);
 }
 
 // ─── Main Analyze Entry Point ─────────────────────────────────────────────────
@@ -670,8 +813,6 @@ async function analyzeDesk() {
       hideLoadingOverlay();
       renderAIResult(result);
       showToast("AI 报告已生成 ✓");
-
-      // Scroll to result on mobile
       document.querySelector(".result-panel").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
       hideLoadingOverlay();
@@ -723,16 +864,17 @@ function handleImageUpload(event) {
 // ─── Export / Copy ────────────────────────────────────────────────────────────
 
 function getReportText() {
+  const badge = document.querySelector("#personaBadge").textContent;
   const title = document.querySelector("#personaTitle").textContent;
   const roast = document.querySelector("#roastText").textContent;
-  const focus = document.querySelector("#focusScore").textContent;
-  const stress = document.querySelector("#stressScore").textContent;
-  const health = document.querySelector("#healthScore").textContent;
+  const moyu = document.querySelector("#moyuBar").textContent;
+  const guolao = document.querySelector("#guolaoBar").textContent;
+  const xuming = document.querySelector("#xumingBar").textContent;
   const advice = [...document.querySelectorAll("#adviceList li")]
     .map((item, index) => `${index + 1}. ${item.textContent}`)
     .join("\n");
 
-  return `DeskMind 桌面人格报告\n\n${title}\n${roast}\n\n专注度：${focus}\n压力指数：${stress}\n健康风险：${health}\n\n桌面改造方案：\n${advice}\n\n— AI 看穿你的桌面 deskmind.ai`;
+  return `DeskMind 桌面人格报告\n\n【${badge}】${title}\n${roast}\n\n🐟 摸鱼指数  ${moyu}\n🔥 过劳指数  ${guolao}\n💊 续命能力  ${xuming}\n\n桌面改造方案：\n${advice}\n\n— AI 看穿你的桌面 · DeskMind`;
 }
 
 async function copyReport() {
@@ -745,106 +887,294 @@ async function copyReport() {
   }
 }
 
+// ─── Canvas Export Helpers ────────────────────────────────────────────────────
+
+function _roundedPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function _roundedFill(ctx, x, y, w, h, r, color) {
+  ctx.fillStyle = color;
+  _roundedPath(ctx, x, y, w, h, r);
+  ctx.fill();
+}
+
+function _drawCoverImage(ctx, img, x, y, w, h) {
+  const ir = img.naturalWidth / img.naturalHeight;
+  const br = w / h;
+  let sx, sy, sw, sh;
+  if (ir > br) {
+    sh = img.naturalHeight; sw = sh * br;
+    sx = (img.naturalWidth - sw) / 2; sy = 0;
+  } else {
+    sw = img.naturalWidth; sh = sw / br;
+    sx = 0; sy = 0;
+  }
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+
+function _wrapLines(ctx, text, maxWidth) {
+  const chars = [...text];
+  const lines = [];
+  let line = "";
+  chars.forEach((ch) => {
+    const test = line + ch;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line);
+      line = ch;
+    } else {
+      line = test;
+    }
+  });
+  if (line) lines.push(line);
+  return lines;
+}
+
+function _drawWrapped(ctx, text, x, y, maxWidth, lineHeight) {
+  const lines = _wrapLines(ctx, text, maxWidth);
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+  return lines.length;
+}
+
+// ─── Export Share Card ────────────────────────────────────────────────────────
+
 function exportShareCard() {
-  const canvas = document.createElement("canvas");
-  const width = 1200;
-  const height = 1600;
-  const ctx = canvas.getContext("2d");
-  const persona = document.querySelector("#personaTitle").textContent;
   const badge = document.querySelector("#personaBadge").textContent;
+  const title = document.querySelector("#personaTitle").textContent;
   const roast = document.querySelector("#roastText").textContent;
-  const scores = [
-    ["专注度", document.querySelector("#focusScore").textContent, "#4c956c"],
-    ["压力指数", document.querySelector("#stressScore").textContent, "#e85d4f"],
-    ["健康风险", document.querySelector("#healthScore").textContent, "#f0b429"]
-  ];
+  const moyuText = document.querySelector("#moyuBar").textContent;
+  const guolaoText = document.querySelector("#guolaoBar").textContent;
+  const xumingText = document.querySelector("#xumingBar").textContent;
+  const personaImgSrc = document.querySelector("#personaImage").src;
 
-  canvas.width = width;
-  canvas.height = height;
+  showToast("正在生成分享卡…");
 
-  ctx.fillStyle = "#fbfbf7";
-  ctx.fillRect(0, 0, width, height);
-  ctx.fillStyle = "#0f8b8d";
-  ctx.fillRect(0, 0, width, 220);
-  ctx.fillStyle = "#e85d4f";
-  ctx.fillRect(0, 220, width, 18);
-  ctx.fillStyle = "#17201d";
-  ctx.fillRect(72, 1040, width - 144, 2);
+  const img = new Image();
+  const render = (loadedImg) => _drawExportCard(loadedImg, { badge, title, roast, moyuText, guolaoText, xumingText });
+  img.onload = () => render(img);
+  img.onerror = () => render(null);
+  img.src = personaImgSrc;
+}
 
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "700 44px Microsoft YaHei, sans-serif";
-  ctx.fillText("DeskMind Report", 72, 110);
-  ctx.font = "800 36px Microsoft YaHei, sans-serif";
-  ctx.fillText(badge, 72, 172);
+function _drawExportCard(personaImg, { badge, title, roast, moyuText, guolaoText, xumingText }) {
+  // ──────────────────────────────────────────────────────
+  //  Card layout (top → bottom):
+  //  [TEXT ZONE]   DeskMind brand → badge (big) → subtitle → roast (big+bold)
+  //  [IMAGE ZONE]  character image, FULLY contained, no crop
+  //  [METRIC ZONE] 3 compact metric cards
+  //  [FOOTER]      branding
+  //
+  //  KEY: TEXT_H is computed by *simulating* the exact same y-advances
+  //  used during drawing, so IMG_Y never overlaps text.
+  // ──────────────────────────────────────────────────────
+  const W = 1080;
+  const PAD = 60;
 
-  ctx.fillStyle = "#17201d";
-  ctx.font = "900 76px Microsoft YaHei, sans-serif";
-  wrapText(ctx, persona, 72, 330, width - 144, 90);
+  // Font specs (single source of truth used in both measure + draw passes)
+  const F_BADGE   = `900 80px "Microsoft YaHei", sans-serif`;
+  const F_TITLE   = `700 36px "Microsoft YaHei", sans-serif`;
+  const F_ROAST   = `700 40px "Microsoft YaHei", sans-serif`;
+  const LH_BADGE  = 94;
+  const LH_TITLE  = 50;
+  const LH_ROAST  = 58;
+  const TEXT_W    = W - PAD * 2;
 
-  ctx.fillStyle = "#34413e";
-  ctx.font = "400 34px Microsoft YaHei, sans-serif";
-  wrapText(ctx, roast, 72, 520, width - 144, 54);
+  // ── Pass 1: measure line counts using a scratch context ──
+  const sc = document.createElement("canvas").getContext("2d");
+  // badge and label are now on the same line, so no need for badgeN
+  sc.font = F_TITLE;  const titleN  = _wrapLines(sc, title, TEXT_W).length;
+  sc.font = F_ROAST;  const roastN  = _wrapLines(sc, roast, TEXT_W).length;
 
-  scores.forEach(([label, value, color], index) => {
-    const x = 72 + index * 352;
-    ctx.fillStyle = "#ffffff";
-    roundedRect(ctx, x, 820, 310, 150, 18);
+  // ── Simulate y to compute TEXT_H exactly ──
+  // Each += here MUST mirror the exact same += in the drawing pass below.
+  let sy = 80;
+  sy += 44 + 54;                      // "DeskMind" (44) + tagline (54)
+  sy += LH_BADGE + 24;                // combined "你的桌面人格 badge" line (single line) + gap
+  sy += titleN  * LH_TITLE  + 24;    // subtitle block + gap
+  sy += 22;                           // divider gap
+  sy += roastN  * LH_ROAST;          // roast (last baseline)
+  const TEXT_H = sy + 52;            // bottom padding below last roast line
+
+  // ── Compute total canvas height ──
+  const METRIC_H = 100;
+  const FOOTER_H = 56;
+  const IMAGE_H  = Math.max(620, 1620 - TEXT_H - METRIC_H - FOOTER_H);
+  const H        = TEXT_H + IMAGE_H + METRIC_H + FOOTER_H;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d");
+
+  // ── Background ──
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, "#0c2321");
+  bg.addColorStop(0.55, "#112a27");
+  bg.addColorStop(1, "#0a1918");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle texture dots
+  ctx.fillStyle = "rgba(15, 139, 141, 0.045)";
+  for (let i = 0; i < 60; i++) {
+    const px = (Math.sin(i * 53.1) * 0.5 + 0.5) * W;
+    const py = (Math.cos(i * 37.9) * 0.5 + 0.5) * H;
+    ctx.beginPath();
+    ctx.arc(px, py, 1.5 + (i % 4), 0, Math.PI * 2);
     ctx.fill();
+  }
+
+  // ── Accent bar ──
+  const barGrad = ctx.createLinearGradient(0, 0, W, 0);
+  barGrad.addColorStop(0, "#0f8b8d");
+  barGrad.addColorStop(1, "#4c956c");
+  ctx.fillStyle = barGrad;
+  ctx.fillRect(0, 0, W, 12);
+
+  // ── Pass 2: draw text (same y-advances as simulation above) ──
+  let y = 80;
+
+  // DeskMind brand
+  ctx.fillStyle = "rgba(255,255,255,0.9)";
+  ctx.font = `800 40px "Microsoft YaHei", sans-serif`;
+  ctx.fillText("DeskMind", PAD, y);
+  y += 44;
+  ctx.fillStyle = "rgba(255,255,255,0.32)";
+  ctx.font = `400 22px "Microsoft YaHei", sans-serif`;
+  ctx.fillText("AI 桌面人格分析室", PAD, y);
+  y += 54;
+
+  // Combined line: "你的桌面人格" (44px, muted) + badge (80px, coral) — same baseline, centered as a unit
+  const F_LABEL_LINE = `700 44px "Microsoft YaHei", sans-serif`;
+  const COMBO_GAP = 26;
+  ctx.font = F_LABEL_LINE;
+  const labelLineW = ctx.measureText("你的桌面人格").width;
+  ctx.font = F_BADGE;
+  const badgeLineW = ctx.measureText(badge).width;
+  const comboTotalW = labelLineW + COMBO_GAP + badgeLineW;
+  const comboX = Math.max(PAD, (W - comboTotalW) / 2);
+
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.font = F_LABEL_LINE;
+  ctx.fillText("你的桌面人格", comboX, y);
+
+  ctx.fillStyle = "#e85d4f";
+  ctx.font = F_BADGE;
+  ctx.fillText(badge, comboX + labelLineW + COMBO_GAP, y);
+
+  y += LH_BADGE + 24; // matches sy += LH_BADGE + 24
+
+  // Subtitle
+  ctx.fillStyle = "rgba(80, 215, 215, 0.9)";
+  ctx.font = F_TITLE;
+  const titleLinesDrawn = _drawWrapped(ctx, title, PAD, y, TEXT_W, LH_TITLE);
+  y += titleLinesDrawn * LH_TITLE + 24;
+
+  // Divider line
+  const dg = ctx.createLinearGradient(PAD, 0, PAD + 220, 0);
+  dg.addColorStop(0, "#0f8b8d");
+  dg.addColorStop(1, "rgba(15,139,141,0)");
+  ctx.fillStyle = dg;
+  ctx.fillRect(PAD, y, 220, 3);
+  y += 22;
+
+  // Roast — big, bold, high contrast
+  ctx.fillStyle = "rgba(255,255,255,0.88)";
+  ctx.font = F_ROAST;
+  _drawWrapped(ctx, roast, PAD, y, TEXT_W, LH_ROAST);
+
+  // ── IMAGE ZONE (starts exactly at TEXT_H) ──
+  const IMG_Y = TEXT_H;
+
+  // Subtle background fill for letterbox areas
+  const imgZoneBg = ctx.createLinearGradient(0, IMG_Y, 0, IMG_Y + IMAGE_H);
+  imgZoneBg.addColorStop(0, "rgba(10, 40, 36, 0.5)");
+  imgZoneBg.addColorStop(0.5, "rgba(8, 32, 29, 0.3)");
+  imgZoneBg.addColorStop(1, "rgba(10, 40, 36, 0.5)");
+  ctx.fillStyle = imgZoneBg;
+  ctx.fillRect(0, IMG_Y, W, IMAGE_H);
+
+  if (personaImg) {
+    // CONTAIN: compute dimensions so the full image fits without any cropping
+    const ir = personaImg.naturalWidth / personaImg.naturalHeight; // image aspect
+    const zr = W / IMAGE_H;                                         // zone aspect
+    let dx, dy, dw, dh;
+    if (ir >= zr) {
+      // image wider than zone → fit width, center vertically, bottom-align
+      dw = W; dh = W / ir;
+      dx = 0; dy = IMG_Y + IMAGE_H - dh;   // sit at the bottom
+    } else {
+      // image taller/squarer → fit height, center horizontally
+      dh = IMAGE_H; dw = IMAGE_H * ir;
+      dx = (W - dw) / 2; dy = IMG_Y;
+    }
+    ctx.drawImage(personaImg, dx, dy, dw, dh);
+
+    // Thin gradient fade at top of image zone (blends into text)
+    const topFade = ctx.createLinearGradient(0, IMG_Y, 0, IMG_Y + 80);
+    topFade.addColorStop(0, "rgba(11, 35, 33, 0.6)");
+    topFade.addColorStop(1, "rgba(11, 35, 33, 0)");
+    ctx.fillStyle = topFade;
+    ctx.fillRect(0, IMG_Y, W, 80);
+
+    // Thin gradient fade at bottom of image zone
+    const btmFade = ctx.createLinearGradient(0, IMG_Y + IMAGE_H - 80, 0, IMG_Y + IMAGE_H);
+    btmFade.addColorStop(0, "rgba(11, 35, 33, 0)");
+    btmFade.addColorStop(1, "rgba(11, 35, 33, 0.55)");
+    ctx.fillStyle = btmFade;
+    ctx.fillRect(0, IMG_Y + IMAGE_H - 80, W, 80);
+  } else {
+    ctx.fillStyle = "rgba(255,255,255,0.18)";
+    ctx.font = `400 36px "Microsoft YaHei", sans-serif`;
+    ctx.textAlign = "center";
+    ctx.fillText("人格角色图", W / 2, IMG_Y + IMAGE_H / 2);
+    ctx.textAlign = "left";
+  }
+
+  // ── COMPACT METRICS ZONE ──
+  const MZ_Y = TEXT_H + IMAGE_H + 10;
+  const MW = (W - PAD * 2 - 20) / 3;
+  const MC_H = 90;
+  [
+    { label: "🐟 摸鱼指数", bar: moyuText, color: "#5d8ef5" },
+    { label: "🔥 过劳指数", bar: guolaoText, color: "#e85d4f" },
+    { label: "💊 续命能力", bar: xumingText, color: "#4c956c" },
+  ].forEach(({ label, bar, color }, i) => {
+    const mx = PAD + i * (MW + 10);
+    _roundedFill(ctx, mx, MZ_Y, MW, MC_H, 12, "rgba(255,255,255,0.07)");
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 1;
+    _roundedPath(ctx, mx, MZ_Y, MW, MC_H, 12);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(255,255,255,0.46)";
+    ctx.font = `600 20px "Microsoft YaHei", sans-serif`;
+    ctx.fillText(label, mx + 14, MZ_Y + 34);
     ctx.fillStyle = color;
-    ctx.font = "900 58px Microsoft YaHei, sans-serif";
-    ctx.fillText(value, x + 28, 890);
-    ctx.fillStyle = "#64706d";
-    ctx.font = "700 26px Microsoft YaHei, sans-serif";
-    ctx.fillText(label, x + 28, 936);
+    ctx.font = `700 20px "Courier New", monospace`;
+    ctx.fillText(bar, mx + 14, MZ_Y + 62);
   });
 
-  ctx.fillStyle = "#17201d";
-  ctx.font = "800 40px Microsoft YaHei, sans-serif";
-  ctx.fillText("桌面改造方案", 72, 1120);
-  ctx.font = "400 30px Microsoft YaHei, sans-serif";
-  const advice = [...document.querySelectorAll("#adviceList li")]
-    .map((item, index) => `${index + 1}. ${item.textContent}`)
-    .join("  ");
-  wrapText(ctx, advice, 72, 1190, width - 144, 46);
-
-  ctx.fillStyle = "#0f8b8d";
-  ctx.font = "800 30px Microsoft YaHei, sans-serif";
-  ctx.fillText("AI 看穿你的桌面 · DeskMind", 72, 1510);
+  // ── FOOTER ──
+  const FT_Y = H - 30;
+  ctx.fillStyle = "rgba(255,255,255,0.18)";
+  ctx.font = `500 22px "Microsoft YaHei", sans-serif`;
+  ctx.fillText("由 DeskMind AI 生成 · 看穿你的桌面", PAD, FT_Y);
+  ctx.textAlign = "right";
+  ctx.fillStyle = "rgba(255,255,255,0.1)";
+  ctx.font = `400 18px "Microsoft YaHei", sans-serif`;
+  ctx.fillText("deskmind.ai", W - PAD, FT_Y);
+  ctx.textAlign = "left";
 
   const link = document.createElement("a");
-  link.download = "deskmind-report.png";
+  link.download = `deskmind-${badge}.png`;
   link.href = canvas.toDataURL("image/png");
   link.click();
   showToast("分享卡已导出 ✓");
-}
-
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  const chars = [...text];
-  let line = "";
-  let cursorY = y;
-
-  chars.forEach((char) => {
-    const testLine = line + char;
-    if (ctx.measureText(testLine).width > maxWidth && line) {
-      ctx.fillText(line, x, cursorY);
-      line = char;
-      cursorY += lineHeight;
-    } else {
-      line = testLine;
-    }
-  });
-
-  if (line) ctx.fillText(line, x, cursorY);
-}
-
-function roundedRect(ctx, x, y, width, height, radius) {
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.arcTo(x + width, y, x + width, y + height, radius);
-  ctx.arcTo(x + width, y + height, x, y + height, radius);
-  ctx.arcTo(x, y + height, x, y, radius);
-  ctx.arcTo(x, y, x + width, y, radius);
-  ctx.closePath();
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
