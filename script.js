@@ -1,4 +1,15 @@
+// ─── Constants ──────────────────────────────────────────────────────────────
+
 const defaultImage = "assets/sample-desk.png";
+
+const LOADING_STEPS = [
+  "正在识别桌面物品…",
+  "构建 Scene Graph…",
+  "推理行为模式…",
+  "生成人格画像…",
+  "撰写改造方案…",
+  "整理购买清单…",
+];
 
 const signals = [
   {
@@ -248,6 +259,13 @@ const fallbackPersona = {
   }
 };
 
+// ─── State ───────────────────────────────────────────────────────────────────
+
+let uploadedImageBase64 = null;
+let loadingStepTimer = null;
+
+// ─── DOM refs ────────────────────────────────────────────────────────────────
+
 const deskPreview = document.querySelector("#deskPreview");
 const imageInput = document.querySelector("#deskImageInput");
 const resetImageButton = document.querySelector("#resetImageButton");
@@ -258,6 +276,140 @@ const exportCardButton = document.querySelector("#exportCardButton");
 const copyReportButton = document.querySelector("#copyReportButton");
 const toast = document.querySelector("#toast");
 
+const loadingOverlay = document.querySelector("#loadingOverlay");
+const loadingStepEl = document.querySelector("#loadingStep");
+const loadingBar = document.querySelector("#loadingBar");
+
+const configModal = document.querySelector("#configModal");
+const apiConfigButton = document.querySelector("#apiConfigButton");
+const apiDot = document.querySelector("#apiDot");
+const apiStatusLabel = document.querySelector("#apiStatusLabel");
+const aiModeBadge = document.querySelector("#aiModeBadge");
+const aiModeLabel = document.querySelector("#aiModeLabel");
+
+// ─── Config ──────────────────────────────────────────────────────────────────
+
+const CONFIG_KEY = "deskmind_config";
+const DEFAULT_CONFIG = {
+  apiBase: "https://ark.cn-beijing.volces.com/api/v3",
+  apiKey: "ark-0bb85c76-10e8-471e-9439-b889f1402d45-b10c7",
+  model: "doubao-seed-2-0-lite-260428",
+};
+
+function loadConfig() {
+  try {
+    const raw = localStorage.getItem(CONFIG_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      // If previously saved without a key, fall back to the built-in default
+      if (!saved.apiKey) saved.apiKey = DEFAULT_CONFIG.apiKey;
+      return { ...DEFAULT_CONFIG, ...saved };
+    }
+    return { ...DEFAULT_CONFIG };
+  } catch {
+    return { ...DEFAULT_CONFIG };
+  }
+}
+
+function saveConfig(config) {
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+}
+
+function hasApiKey() {
+  return Boolean(loadConfig().apiKey.trim());
+}
+
+function updateApiStatusUI() {
+  const configured = hasApiKey();
+  apiDot.classList.toggle("active", configured);
+  apiStatusLabel.textContent = configured ? "AI 已配置" : "API 配置";
+}
+
+function updateAiModeUI() {
+  const ready = uploadedImageBase64 && hasApiKey();
+  aiModeBadge.classList.toggle("ai-ready", ready);
+  if (ready) {
+    aiModeLabel.textContent = "AI 分析模式（已上传图片 + API Key）";
+  } else if (uploadedImageBase64 && !hasApiKey()) {
+    aiModeLabel.textContent = "已上传图片，点击「API 配置」填写 Key 以启用 AI 分析";
+  } else if (!uploadedImageBase64 && hasApiKey()) {
+    aiModeLabel.textContent = "上传桌面照片后将使用 AI 真实分析";
+  } else {
+    aiModeLabel.textContent = "本地模式（上传图片 + 配置 API 后启用 AI 分析）";
+  }
+}
+
+// ─── Config Modal ────────────────────────────────────────────────────────────
+
+function openConfigModal() {
+  const config = loadConfig();
+  document.querySelector("#cfgApiBase").value = config.apiBase || DEFAULT_CONFIG.apiBase;
+  document.querySelector("#cfgApiKey").value = config.apiKey || "";
+  document.querySelector("#cfgModel").value = config.model || DEFAULT_CONFIG.model;
+  configModal.showModal();
+}
+
+function saveConfigFromModal() {
+  const config = {
+    apiBase: document.querySelector("#cfgApiBase").value.trim() || DEFAULT_CONFIG.apiBase,
+    apiKey: document.querySelector("#cfgApiKey").value.trim(),
+    model: document.querySelector("#cfgModel").value.trim() || DEFAULT_CONFIG.model,
+  };
+  saveConfig(config);
+  configModal.close();
+  updateApiStatusUI();
+  updateAiModeUI();
+  showToast(config.apiKey ? "API 配置已保存 ✓" : "配置已保存（未填 API Key）");
+}
+
+apiConfigButton.addEventListener("click", openConfigModal);
+
+document.querySelector("#configSaveBtn").addEventListener("click", saveConfigFromModal);
+document.querySelector("#configCancelBtn").addEventListener("click", () => configModal.close());
+
+document.querySelector("#toggleKeyVisibility").addEventListener("click", () => {
+  const input = document.querySelector("#cfgApiKey");
+  input.type = input.type === "password" ? "text" : "password";
+});
+
+document.querySelectorAll(".preset-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelector("#cfgApiBase").value = btn.dataset.base;
+    document.querySelector("#cfgModel").value = btn.dataset.model;
+  });
+});
+
+configModal.addEventListener("click", (e) => {
+  if (e.target === configModal) configModal.close();
+});
+
+// ─── Loading Overlay ─────────────────────────────────────────────────────────
+
+function showLoadingOverlay() {
+  loadingOverlay.hidden = false;
+  analyzeButton.disabled = true;
+  let stepIndex = 0;
+
+  function nextStep() {
+    loadingStepEl.textContent = LOADING_STEPS[stepIndex % LOADING_STEPS.length];
+    stepIndex++;
+  }
+
+  nextStep();
+  loadingStepTimer = setInterval(nextStep, 1800);
+}
+
+function hideLoadingOverlay() {
+  loadingOverlay.hidden = true;
+  analyzeButton.disabled = false;
+  if (loadingStepTimer) {
+    clearInterval(loadingStepTimer);
+    loadingStepTimer = null;
+  }
+}
+
+// ─── Utilities ───────────────────────────────────────────────────────────────
+
 function clamp(value, min = 0, max = 100) {
   return Math.max(min, Math.min(max, Math.round(value)));
 }
@@ -265,8 +417,10 @@ function clamp(value, min = 0, max = 100) {
 function showToast(message) {
   toast.textContent = message;
   toast.classList.add("show");
-  window.setTimeout(() => toast.classList.remove("show"), 2200);
+  window.setTimeout(() => toast.classList.remove("show"), 2800);
 }
+
+// ─── Signal Controls ─────────────────────────────────────────────────────────
 
 function createSignalControls() {
   signalGrid.innerHTML = signals
@@ -291,11 +445,14 @@ function getSignal(id) {
   return signals.find((signal) => signal.id === id);
 }
 
+// ─── Local Analysis ───────────────────────────────────────────────────────────
+
 function calculateScores(selected) {
   const base = { focus: 58, stress: 34, health: 28, share: 44 };
 
   selected.forEach((id) => {
     const signal = getSignal(id);
+    if (!signal) return;
     Object.entries(signal.weights).forEach(([key, value]) => {
       base[key] += value;
     });
@@ -372,7 +529,7 @@ function buildAdvice(selected, scores, goal) {
   }
 
   const goalAdvice = {
-    study: "学习模式建议 35 分钟输入 + 10 分钟输出，不让阅读停在“看过”。",
+    study: "学习模式建议 35 分钟输入 + 10 分钟输出，不让阅读停在「看过」。",
     work: "工作模式建议用主屏产出、侧边参考、手机静音的三分区节奏。",
     rest: "作息模式建议睡前 30 分钟把桌面收尾，给大脑一个关机信号。"
   };
@@ -396,6 +553,8 @@ function buildAgentPlan(selected) {
   return plan;
 }
 
+// ─── Render Helpers ───────────────────────────────────────────────────────────
+
 function renderList(selector, items) {
   const target = document.querySelector(selector);
   target.innerHTML = items.map((item) => `<li>${item}</li>`).join("");
@@ -405,6 +564,163 @@ function setMeter(scoreId, meterId, value) {
   document.querySelector(scoreId).textContent = value;
   document.querySelector(meterId).style.width = `${value}%`;
 }
+
+// ─── AI API Call ──────────────────────────────────────────────────────────────
+
+async function callAnalyzeAPI(imageBase64, intent, tone, goal) {
+  const config = loadConfig();
+
+  const response = await fetch("/api/analyze", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      image_base64: imageBase64,
+      intent: intent,
+      tone: tone,
+      goal: goal,
+      api_key: config.apiKey,
+      model: config.model || DEFAULT_CONFIG.model,
+      api_base: config.apiBase || DEFAULT_CONFIG.apiBase,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: response.statusText }));
+    throw new Error(err.detail || `HTTP ${response.status}`);
+  }
+
+  return response.json();
+}
+
+// ─── Render AI Result ────────────────────────────────────────────────────────
+
+function renderAIResult(result) {
+  const { persona, scores, scene, behavior, advice, shopping, detected_signals } = result;
+
+  document.querySelector("#personaBadge").textContent = persona.badge || "AI 分析";
+  document.querySelector("#personaTitle").textContent = persona.title || "桌面人格";
+  document.querySelector("#roastText").textContent = persona.roast || "AI 正在思考…";
+
+  setMeter("#focusScore", "#focusMeter", scores.focus ?? 60);
+  setMeter("#stressScore", "#stressMeter", scores.stress ?? 50);
+  setMeter("#healthScore", "#healthMeter", scores.health ?? 40);
+
+  renderList("#sceneList", scene?.length ? scene : ["AI 未识别到物品，请检查图片质量。"]);
+  renderList("#behaviorList", behavior?.length ? behavior : ["暂无行为推理。"]);
+  renderList("#adviceList", advice?.length ? advice : ["暂无改造建议。"]);
+  renderList("#shoppingList", shopping?.length ? shopping : ["暂无购买建议。"]);
+
+  // Sync checkboxes with AI-detected signals
+  const detectedSet = new Set(detected_signals || []);
+  signalGrid.querySelectorAll("input").forEach((input) => {
+    input.checked = detectedSet.has(input.value);
+  });
+
+  renderList("#agentList", buildAgentPlan(detectedSet));
+
+  // Highlight report card
+  document.querySelector(".share-card").classList.add("ai-analyzed");
+  setTimeout(() => document.querySelector(".share-card").classList.remove("ai-analyzed"), 1200);
+}
+
+// ─── Render Local Result ──────────────────────────────────────────────────────
+
+function renderLocalResult(selected, goal, tone) {
+  const scores = calculateScores(selected);
+  const persona = pickPersona(selected, scores, goal);
+  const selectedSignals = [...selected].map(getSignal).filter(Boolean);
+
+  document.querySelector("#personaBadge").textContent = persona.badge;
+  document.querySelector("#personaTitle").textContent = persona.title;
+  document.querySelector("#roastText").textContent = persona.roasts[tone] || persona.roasts.sharp;
+
+  setMeter("#focusScore", "#focusMeter", scores.focus);
+  setMeter("#stressScore", "#stressMeter", scores.stress);
+  setMeter("#healthScore", "#healthMeter", scores.health);
+
+  renderList(
+    "#sceneList",
+    selectedSignals.length
+      ? selectedSignals.slice(0, 5).map((s) => s.scene)
+      : ["未选择桌面线索，当前报告使用默认人格模板。"]
+  );
+  renderList("#behaviorList", buildBehavior(selected, scores, goal));
+  renderList("#adviceList", buildAdvice(selected, scores, goal));
+  renderList(
+    "#shoppingList",
+    [...new Set(selectedSignals.map((s) => s.shopping))].slice(0, 5)
+  );
+  renderList("#agentList", buildAgentPlan(selected));
+}
+
+// ─── Main Analyze Entry Point ─────────────────────────────────────────────────
+
+async function analyzeDesk() {
+  const selected = getSelectedSignals();
+  const goal = document.querySelector("#goalSelect").value;
+  const tone = document.querySelector("#toneSelect").value;
+  const intent = document.querySelector("#intentInput").value.trim();
+
+  const useAI = uploadedImageBase64 && hasApiKey();
+
+  if (useAI) {
+    showLoadingOverlay();
+    try {
+      const result = await callAnalyzeAPI(uploadedImageBase64, intent, tone, goal);
+      hideLoadingOverlay();
+      renderAIResult(result);
+      showToast("AI 报告已生成 ✓");
+
+      // Scroll to result on mobile
+      document.querySelector(".result-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (err) {
+      hideLoadingOverlay();
+      showToast(`AI 分析失败，已切换本地模式：${err.message}`);
+      renderLocalResult(selected, goal, tone);
+    }
+  } else {
+    if (uploadedImageBase64 && !hasApiKey()) {
+      showToast("请先配置 API Key（右上角 → API 配置）");
+    }
+    renderLocalResult(selected, goal, tone);
+    if (!uploadedImageBase64) showToast("报告已生成（本地模式）");
+  }
+}
+
+// ─── Randomize ───────────────────────────────────────────────────────────────
+
+function randomizeSignals() {
+  const inputs = [...signalGrid.querySelectorAll("input")];
+  const count = 6 + Math.floor(Math.random() * 5);
+  const pool = [...signals].sort(() => Math.random() - 0.5).slice(0, count);
+  const selectedIds = new Set(pool.map((s) => s.id));
+
+  inputs.forEach((input) => {
+    input.checked = selectedIds.has(input.value);
+  });
+
+  renderLocalResult(selectedIds, document.querySelector("#goalSelect").value, document.querySelector("#toneSelect").value);
+  showToast("已随机生成桌面（本地模式）");
+}
+
+// ─── Image Upload ─────────────────────────────────────────────────────────────
+
+function handleImageUpload(event) {
+  const [file] = event.target.files;
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    deskPreview.src = reader.result;
+    deskPreview.alt = `${file.name} 的桌面预览`;
+    uploadedImageBase64 = reader.result;
+    updateAiModeUI();
+    showToast("桌面照片已载入 — 点击「生成报告」开始 AI 分析");
+  });
+  reader.readAsDataURL(file);
+}
+
+// ─── Export / Copy ────────────────────────────────────────────────────────────
 
 function getReportText() {
   const title = document.querySelector("#personaTitle").textContent;
@@ -416,74 +732,14 @@ function getReportText() {
     .map((item, index) => `${index + 1}. ${item.textContent}`)
     .join("\n");
 
-  return `DeskMind 桌面人格报告\n\n${title}\n${roast}\n\n专注度：${focus}\n压力指数：${stress}\n健康风险：${health}\n\n桌面改造方案：\n${advice}`;
-}
-
-function analyzeDesk() {
-  const selected = getSelectedSignals();
-  const goal = document.querySelector("#goalSelect").value;
-  const tone = document.querySelector("#toneSelect").value;
-  const scores = calculateScores(selected);
-  const persona = pickPersona(selected, scores, goal);
-  const selectedSignals = [...selected].map(getSignal).filter(Boolean);
-
-  document.querySelector("#personaBadge").textContent = persona.badge;
-  document.querySelector("#personaTitle").textContent = persona.title;
-  document.querySelector("#roastText").textContent = persona.roasts[tone];
-
-  setMeter("#focusScore", "#focusMeter", scores.focus);
-  setMeter("#stressScore", "#stressMeter", scores.stress);
-  setMeter("#healthScore", "#healthMeter", scores.health);
-
-  renderList(
-    "#sceneList",
-    selectedSignals.length
-      ? selectedSignals.slice(0, 5).map((signal) => signal.scene)
-      : ["未选择桌面线索，当前报告使用默认人格模板。"]
-  );
-  renderList("#behaviorList", buildBehavior(selected, scores, goal));
-  renderList("#adviceList", buildAdvice(selected, scores, goal));
-  renderList(
-    "#shoppingList",
-    [...new Set(selectedSignals.map((signal) => signal.shopping))].slice(0, 5)
-  );
-  renderList("#agentList", buildAgentPlan(selected));
-
-  showToast("报告已生成");
-}
-
-function randomizeSignals() {
-  const inputs = [...signalGrid.querySelectorAll("input")];
-  const count = 6 + Math.floor(Math.random() * 5);
-  const pool = [...signals].sort(() => Math.random() - 0.5).slice(0, count);
-  const selectedIds = new Set(pool.map((signal) => signal.id));
-
-  inputs.forEach((input) => {
-    input.checked = selectedIds.has(input.value);
-  });
-
-  analyzeDesk();
-}
-
-function handleImageUpload(event) {
-  const [file] = event.target.files;
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.addEventListener("load", () => {
-    deskPreview.src = reader.result;
-    deskPreview.alt = `${file.name} 的桌面预览`;
-    showToast("桌面照片已载入");
-  });
-  reader.readAsDataURL(file);
+  return `DeskMind 桌面人格报告\n\n${title}\n${roast}\n\n专注度：${focus}\n压力指数：${stress}\n健康风险：${health}\n\n桌面改造方案：\n${advice}\n\n— AI 看穿你的桌面 deskmind.ai`;
 }
 
 async function copyReport() {
   const text = getReportText();
-
   try {
     await navigator.clipboard.writeText(text);
-    showToast("报告已复制");
+    showToast("报告已复制 ✓");
   } catch {
     showToast("浏览器限制了复制权限，请手动选中文本");
   }
@@ -553,13 +809,13 @@ function exportShareCard() {
 
   ctx.fillStyle = "#0f8b8d";
   ctx.font = "800 30px Microsoft YaHei, sans-serif";
-  ctx.fillText("AI 看穿你的桌面", 72, 1510);
+  ctx.fillText("AI 看穿你的桌面 · DeskMind", 72, 1510);
 
   const link = document.createElement("a");
   link.download = "deskmind-report.png";
   link.href = canvas.toDataURL("image/png");
   link.click();
-  showToast("分享卡已导出");
+  showToast("分享卡已导出 ✓");
 }
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
@@ -578,9 +834,7 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
     }
   });
 
-  if (line) {
-    ctx.fillText(line, x, cursorY);
-  }
+  if (line) ctx.fillText(line, x, cursorY);
 }
 
 function roundedRect(ctx, x, y, width, height, radius) {
@@ -593,16 +847,24 @@ function roundedRect(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
+// ─── Init ─────────────────────────────────────────────────────────────────────
+
 createSignalControls();
-analyzeDesk();
+updateApiStatusUI();
+updateAiModeUI();
+renderLocalResult(new Set(defaultSelected), "study", "sharp");
 
 imageInput.addEventListener("change", handleImageUpload);
+
 resetImageButton.addEventListener("click", () => {
   deskPreview.src = defaultImage;
   deskPreview.alt = "DeskMind 默认桌面样片";
   imageInput.value = "";
+  uploadedImageBase64 = null;
+  updateAiModeUI();
   showToast("已恢复默认样片");
 });
+
 analyzeButton.addEventListener("click", analyzeDesk);
 randomizeButton.addEventListener("click", randomizeSignals);
 copyReportButton.addEventListener("click", copyReport);

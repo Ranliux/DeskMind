@@ -603,3 +603,358 @@ select {
     max-width: 100%;
   }
 }
+
+/* ─── Analyze Row & AI Mode Badge ──────────────────────────────────────────── */
+
+.analyze-row {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.ai-mode-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(23, 32, 29, 0.06);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: background 300ms ease, color 300ms ease;
+}
+
+.ai-mode-badge .ai-dot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: background 300ms ease;
+}
+
+.ai-mode-badge.ai-ready {
+  background: rgba(15, 139, 141, 0.1);
+  color: var(--teal-dark);
+}
+
+.ai-mode-badge.ai-ready .ai-dot {
+  background: var(--teal);
+  box-shadow: 0 0 6px rgba(15, 139, 141, 0.5);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.analyze-button {
+  margin-top: 0;
+}
+
+/* ─── API Status Button ─────────────────────────────────────────────────────── */
+
+.api-status-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.api-dot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(23, 32, 29, 0.25);
+  transition: background 300ms ease;
+}
+
+.api-dot.active {
+  background: var(--leaf);
+  box-shadow: 0 0 6px rgba(76, 149, 108, 0.5);
+}
+
+/* ─── Config Modal ──────────────────────────────────────────────────────────── */
+
+.config-modal {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.config-modal[open] {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.config-modal::backdrop {
+  background: rgba(23, 32, 29, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.config-modal-inner {
+  width: min(500px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border-radius: 14px;
+  padding: clamp(24px, 5vw, 36px);
+  background: var(--surface);
+  box-shadow: 0 40px 80px rgba(23, 32, 29, 0.22);
+}
+
+.config-modal h2 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+}
+
+.config-desc {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.config-form {
+  display: grid;
+  gap: 18px;
+}
+
+.config-field {
+  display: grid;
+  gap: 7px;
+}
+
+.config-field span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.config-field input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.84);
+  color: var(--ink);
+  font: inherit;
+  transition: border-color 160ms ease;
+}
+
+.config-field input:focus-visible {
+  outline: 3px solid rgba(240, 180, 41, 0.55);
+  outline-offset: 2px;
+}
+
+.input-eye-wrap {
+  position: relative;
+}
+
+.input-eye-wrap input {
+  padding-right: 44px;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 160ms ease;
+}
+
+.eye-btn:hover {
+  opacity: 1;
+}
+
+.config-presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0 0;
+}
+
+.config-presets span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.preset-btn {
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.74);
+  color: #2e3a37;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.preset-btn:hover {
+  border-color: var(--teal);
+  background: rgba(15, 139, 141, 0.08);
+}
+
+.config-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* ─── Loading Overlay ───────────────────────────────────────────────────────── */
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(23, 32, 29, 0.7);
+  backdrop-filter: blur(8px);
+  animation: fade-in 200ms ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.loading-overlay[hidden] {
+  display: none;
+}
+
+.loading-card {
+  width: min(380px, calc(100vw - 32px));
+  padding: 40px 36px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 50px 100px rgba(23, 32, 29, 0.35);
+  text-align: center;
+  animation: slide-up 250ms ease;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.loading-pulse {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--teal);
+  margin: 0 auto 24px;
+  display: grid;
+  place-items: center;
+  animation: pulse-scale 1.8s ease-in-out infinite;
+}
+
+.loading-pulse svg {
+  width: 36px;
+  height: 36px;
+}
+
+@keyframes pulse-scale {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 139, 141, 0.3); }
+  50% { transform: scale(1.1); box-shadow: 0 0 0 16px rgba(15, 139, 141, 0); }
+}
+
+.loading-title {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.loading-step {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  min-height: 1.4em;
+  transition: opacity 300ms ease;
+}
+
+.loading-bar-track {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.loading-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--teal), var(--leaf));
+  animation: progress 12s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% { width: 4%; }
+  40% { width: 55%; }
+  80% { width: 88%; }
+  100% { width: 96%; }
+}
+
+.loading-hint {
+  margin: 0;
+  color: rgba(100, 112, 109, 0.7);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ─── Share Card AI Highlight ───────────────────────────────────────────────── */
+
+@keyframes card-flash {
+  0%, 100% { box-shadow: var(--shadow); }
+  50% { box-shadow: 0 0 0 3px var(--teal), var(--shadow); }
+}
+
+.share-card.ai-analyzed {
+  animation: card-flash 1.2s ease;
+}
+
+/* ─── Analyze Button Disabled State ─────────────────────────────────────────── */
+
+.analyze-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 420px) {
+  .config-actions {
+    flex-direction: column;
+  }
+
+  .config-actions .ghost-button,
+  .config-actions .primary-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

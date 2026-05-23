@@ -20,10 +20,83 @@
         </span>
       </a>
       <div class="topbar-actions">
+        <button class="api-status-btn ghost-button" id="apiConfigButton" type="button" title="配置 AI 接口">
+          <span class="api-dot" id="apiDot"></span>
+          <span id="apiStatusLabel">API 配置</span>
+        </button>
         <button class="ghost-button" id="copyReportButton" type="button">复制报告</button>
         <button class="primary-button" id="exportCardButton" type="button">导出分享卡</button>
       </div>
     </header>
+
+    <!-- API 配置弹窗 -->
+    <dialog class="config-modal" id="configModal" aria-labelledby="configTitle">
+      <div class="config-modal-inner">
+        <h2 id="configTitle">AI 接口配置</h2>
+        <p class="config-desc">默认使用豆包（火山方舟），也支持通义千问 VL、GPT-4o 等任意兼容接口。配置保存在本地浏览器。</p>
+        <div class="config-form">
+          <label class="config-field" for="cfgApiBase">
+            <span>API Base URL</span>
+            <input
+              id="cfgApiBase"
+              type="url"
+              placeholder="https://ark.cn-beijing.volces.com/api/v3"
+              autocomplete="off"
+            />
+          </label>
+          <label class="config-field" for="cfgApiKey">
+            <span>API Key</span>
+            <div class="input-eye-wrap">
+              <input
+                id="cfgApiKey"
+                type="password"
+                placeholder="ark-xxxxxxxxxxxxxxxx"
+                autocomplete="off"
+              />
+              <button class="eye-btn" id="toggleKeyVisibility" type="button" aria-label="显示/隐藏 API Key">👁</button>
+            </div>
+          </label>
+          <label class="config-field" for="cfgModel">
+            <span>模型名称</span>
+            <input
+              id="cfgModel"
+              type="text"
+              placeholder="doubao-seed-2-0-lite-260428"
+              autocomplete="off"
+            />
+          </label>
+          <div class="config-presets">
+            <span>快速填入：</span>
+            <button class="preset-btn" type="button" data-base="https://ark.cn-beijing.volces.com/api/v3" data-model="doubao-seed-2-0-lite-260428">豆包（推荐）</button>
+            <button class="preset-btn" type="button" data-base="https://dashscope.aliyuncs.com/compatible-mode/v1" data-model="qwen-vl-max">通义千问 VL</button>
+            <button class="preset-btn" type="button" data-base="https://api.openai.com/v1" data-model="gpt-4o">GPT-4o</button>
+          </div>
+        </div>
+        <div class="config-actions">
+          <button class="ghost-button" id="configCancelBtn" type="button">取消</button>
+          <button class="primary-button" id="configSaveBtn" type="button">保存配置</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loadingOverlay" hidden>
+      <div class="loading-card">
+        <div class="loading-pulse" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="20" stroke="white" stroke-width="2.5" stroke-opacity="0.4"/>
+            <path d="M14 24c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="24" cy="24" r="4" fill="white"/>
+          </svg>
+        </div>
+        <h3 class="loading-title">AI 正在看穿你的桌面</h3>
+        <p class="loading-step" id="loadingStep">正在识别桌面物品…</p>
+        <div class="loading-bar-track">
+          <div class="loading-bar" id="loadingBar"></div>
+        </div>
+        <p class="loading-hint">VLM → Scene Graph → Agent Planner</p>
+      </div>
+    </div>
 
     <main class="app-shell" id="app">
       <section class="input-panel" aria-labelledby="inputTitle">
@@ -91,9 +164,15 @@
         </div>
         <div class="signal-grid" id="signalGrid"></div>
 
-        <button class="analyze-button" id="analyzeButton" type="button">
-          生成桌面人格报告
-        </button>
+        <div class="analyze-row">
+          <div class="ai-mode-badge" id="aiModeBadge">
+            <span class="ai-dot"></span>
+            <span id="aiModeLabel">本地模式（上传图片后启用 AI 分析）</span>
+          </div>
+          <button class="analyze-button" id="analyzeButton" type="button">
+            生成桌面人格报告
+          </button>
+        </div>
       </section>
 
       <section class="result-panel" aria-labelledby="resultTitle">
