@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+.git/
+.gitdata/
+node_modules/
+dist/
+build/
+.cache/
+.idea/
+.vscode/

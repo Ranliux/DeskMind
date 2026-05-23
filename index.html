@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeskMind - AI 桌面人格报告</title>
+    <meta
+      name="description"
+      content="DeskMind 根据桌面照片和场景线索生成桌面人格报告、效率画像与改造方案。"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#app" aria-label="DeskMind 首页">
+        <span class="brand-mark">DM</span>
+        <span>
+          <strong>DeskMind</strong>
+          <small>桌面人格分析室</small>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <button class="ghost-button" id="copyReportButton" type="button">复制报告</button>
+        <button class="primary-button" id="exportCardButton" type="button">导出分享卡</button>
+      </div>
+    </header>
+
+    <main class="app-shell" id="app">
+      <section class="input-panel" aria-labelledby="inputTitle">
+        <div class="section-heading">
+          <p>Camera → VLM → Scene Graph → Agent Planner</p>
+          <h1 id="inputTitle">AI 看穿你的桌面</h1>
+        </div>
+
+        <div class="photo-frame" id="dropZone">
+          <img
+            id="deskPreview"
+            src="assets/sample-desk.png"
+            alt="DeskMind 默认桌面样片"
+          />
+          <div class="photo-gradient"></div>
+          <div class="photo-actions">
+            <label class="file-button" for="deskImageInput">上传/拍摄桌面</label>
+            <input
+              id="deskImageInput"
+              name="deskImageInput"
+              type="file"
+              accept="image/*"
+              capture="environment"
+            />
+            <button class="icon-button" id="resetImageButton" type="button" aria-label="恢复默认样片">
+              ↺
+            </button>
+          </div>
+        </div>
+
+        <label class="prompt-field" for="intentInput">
+          <span>这一轮想看什么</span>
+          <textarea
+            id="intentInput"
+            rows="3"
+            placeholder="帮我看看学习状态、效率问题和健康风险"
+          ></textarea>
+        </label>
+
+        <div class="controls-row">
+          <label class="select-field" for="toneSelect">
+            <span>点评口吻</span>
+            <select id="toneSelect">
+              <option value="sharp">毒舌但有用</option>
+              <option value="gentle">温柔修复</option>
+              <option value="coach">效率教练</option>
+            </select>
+          </label>
+          <label class="select-field" for="goalSelect">
+            <span>目标</span>
+            <select id="goalSelect">
+              <option value="study">学习/备考</option>
+              <option value="work">工作/创作</option>
+              <option value="rest">健康作息</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="signal-toolbar">
+          <div>
+            <h2>桌面线索</h2>
+            <p>第一版用可选线索模拟视觉识别结果。</p>
+          </div>
+          <button class="ghost-button" id="randomizeButton" type="button">随机桌面</button>
+        </div>
+        <div class="signal-grid" id="signalGrid"></div>
+
+        <button class="analyze-button" id="analyzeButton" type="button">
+          生成桌面人格报告
+        </button>
+      </section>
+
+      <section class="result-panel" aria-labelledby="resultTitle">
+        <div class="share-card" id="shareCard">
+          <div class="share-card-header">
+            <span>DeskMind Report</span>
+            <strong id="personaBadge">DDL 燃烧流</strong>
+          </div>
+          <h2 id="resultTitle">你的桌面人格</h2>
+          <p class="persona-title" id="personaTitle">凌晨型 DDL 战士</p>
+          <p class="roast" id="roastText">
+            你的桌面像一台正在超频的学习机器：咖啡负责点火，便签负责焦虑，线缆负责制造剧情。
+          </p>
+
+          <div class="metrics" aria-label="桌面状态指标">
+            <article>
+              <span>专注度</span>
+              <strong id="focusScore">74</strong>
+              <div class="meter"><span id="focusMeter"></span></div>
+            </article>
+            <article>
+              <span>压力指数</span>
+              <strong id="stressScore">68</strong>
+              <div class="meter danger"><span id="stressMeter"></span></div>
+            </article>
+            <article>
+              <span>健康风险</span>
+              <strong id="healthScore">51</strong>
+              <div class="meter warning"><span id="healthMeter"></span></div>
+            </article>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <article class="result-card">
+            <h3>Scene Graph</h3>
+            <ul id="sceneList"></ul>
+          </article>
+          <article class="result-card">
+            <h3>行为推理</h3>
+            <ul id="behaviorList"></ul>
+          </article>
+          <article class="result-card wide">
+            <h3>桌面改造方案</h3>
+            <ol id="adviceList"></ol>
+          </article>
+          <article class="result-card">
+            <h3>购买清单</h3>
+            <ul id="shoppingList"></ul>
+          </article>
+          <article class="result-card">
+            <h3>下一步 Agent</h3>
+            <ul id="agentList"></ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
