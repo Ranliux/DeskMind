@@ -1,7 +1,9 @@
 import os
 import json
 import re
-from fastapi import FastAPI, HTTPException
+import socket
+import base64
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -12,6 +14,21 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI(title="DeskMind API", version="1.0.0")
+
+# ── Mobile upload state ───────────────────────────────────────────────────────
+_upload_id: int = 0
+_upload_data: Optional[str] = None   # base64 data-URL of latest phone upload
+
+
+def _get_local_ip() -> str:
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
 
 app.add_middleware(
     CORSMiddleware,
@@ -397,6 +414,32 @@ async def health():
             "API_BASE", "https://ark.cn-beijing.volces.com/api/v3"
         ),
     }
+
+
+# ── Mobile upload endpoints ───────────────────────────────────────────────────
+
+@app.get("/api/local-ip")
+async def local_ip():
+    """Return the machine's LAN IP so the frontend can build the QR code URL."""
+    port = int(os.getenv("PORT", 8000))
+    return {"ip": _get_local_ip(), "port": port}
+
+
+@app.post("/api/mobile-upload")
+async def mobile_upload(file: UploadFile = File(...)):
+    """Receive an image from the phone and store it in memory."""
+    global _upload_id, _upload_data
+    data = await file.read()
+    mime = file.content_type or "image/jpeg"
+    _upload_data = f"data:{mime};base64,{base64.b64encode(data).decode()}"
+    _upload_id += 1
+    return {"ok": True}
+
+
+@app.get("/api/latest-upload")
+async def latest_upload():
+    """Polled by the desktop to detect a new phone upload."""
+    return {"id": _upload_id, "dataUrl": _upload_data}
 
 
 # Serve static files — must be mounted last

@@ -1177,6 +1177,74 @@ function _drawExportCard(personaImg, { badge, title, roast, moyuText, guolaoText
   showToast("分享卡已导出 ✓");
 }
 
+// ─── Mobile QR Upload ─────────────────────────────────────────────────────────
+
+const mobileUploadButton = document.querySelector("#mobileUploadButton");
+const qrModal            = document.querySelector("#qrModal");
+const qrCloseBtn         = document.querySelector("#qrCloseBtn");
+const qrCodeBox          = document.querySelector("#qrCodeBox");
+const qrUrlText          = document.querySelector("#qrUrlText");
+const qrStatusEl         = document.querySelector("#qrStatus");
+
+let _qrPollTimer  = null;
+let _lastUploadId = 0;
+
+async function openQrModal() {
+  // Reset state
+  qrCodeBox.innerHTML = "";
+  qrUrlText.textContent = "正在获取地址…";
+  qrStatusEl.textContent = "等待手机上传…";
+  qrStatusEl.style.color = "";
+  qrModal.showModal();
+
+  try {
+    const { ip, port } = await fetch("/api/local-ip").then(r => r.json());
+    const url = `http://${ip}:${port}/mobile.html`;
+    qrUrlText.textContent = url;
+
+    new QRCode(qrCodeBox, {
+      text: url,
+      width: 200,
+      height: 200,
+      colorDark: "#0d1f1d",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M,
+    });
+
+    // Snapshot current upload id so we only react to NEW uploads
+    _lastUploadId = (await fetch("/api/latest-upload").then(r => r.json())).id;
+
+    _qrPollTimer = setInterval(async () => {
+      try {
+        const { id, dataUrl } = await fetch("/api/latest-upload").then(r => r.json());
+        if (id > _lastUploadId && dataUrl) {
+          _lastUploadId = id;
+          deskPreview.src = dataUrl;
+          deskPreview.alt = "手机上传的桌面照片";
+          uploadedImageBase64 = dataUrl;
+          updateAiModeUI();
+          qrStatusEl.textContent = "✓ 图片已收到！点击「生成报告」开始分析";
+          qrStatusEl.style.color = "#4c956c";
+          showToast("手机图片已载入 — 点击「生成报告」开始 AI 分析");
+        }
+      } catch { /* silent — transient network hiccup */ }
+    }, 2000);
+  } catch {
+    qrUrlText.textContent = "无法获取局域网地址，请确认服务器已启动";
+  }
+}
+
+function closeQrModal() {
+  clearInterval(_qrPollTimer);
+  _qrPollTimer = null;
+  qrModal.close();
+}
+
+mobileUploadButton.addEventListener("click", openQrModal);
+qrCloseBtn.addEventListener("click", closeQrModal);
+// Click backdrop to close
+qrModal.addEventListener("click", e => { if (e.target === qrModal) closeQrModal(); });
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 createSignalControls();

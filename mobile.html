@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <title>DeskMind · 手机上传</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      min-height: 100%;
+      background: linear-gradient(160deg, #0d1f1d 0%, #091410 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: #fff;
+      padding: 32px 24px;
+      gap: 0;
+    }
+    .brand {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      background: linear-gradient(90deg, #50d7d7, #4c956c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 44px;
+    }
+    .btn-primary {
+      width: 100%;
+      max-width: 300px;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, #0f8b8d, #4c956c);
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:active { opacity: 0.8; }
+    .btn-secondary {
+      width: 100%;
+      max-width: 300px;
+      padding: 16px 24px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 16px;
+      color: rgba(255,255,255,0.65);
+      font-size: 16px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+    .btn-secondary:active { background: rgba(255,255,255,0.12); }
+    input[type=file] { display: none; }
+    #preview {
+      max-width: 300px;
+      max-height: 200px;
+      width: 100%;
+      object-fit: contain;
+      border-radius: 14px;
+      margin: 28px 0 0;
+      display: none;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    #status {
+      margin-top: 22px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      min-height: 22px;
+      transition: color 0.3s;
+    }
+    #status.ok  { color: #4c956c; font-weight: 600; }
+    #status.err { color: #e85d4f; }
+    .spinner {
+      display: inline-block;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="brand">DeskMind</div>
+  <div class="tagline">拍摄你的桌面，发现你的人格</div>
+
+  <button class="btn-primary" onclick="document.getElementById('camInput').click()">
+    <span>📷</span>拍摄桌面
+  </button>
+  <input id="camInput" type="file" accept="image/*" capture="environment">
+
+  <button class="btn-secondary" onclick="document.getElementById('galInput').click()">
+    🖼&nbsp; 从相册选择
+  </button>
+  <input id="galInput" type="file" accept="image/*">
+
+  <img id="preview" alt="桌面预览">
+  <div id="status">选择或拍摄你的桌面照片</div>
+
+  <script>
+    function pick(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.getElementById('preview');
+        img.src = e.target.result;
+        img.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+      upload(file);
+    }
+
+    async function upload(file) {
+      const st = document.getElementById('status');
+      st.className = '';
+      st.innerHTML = '<span class="spinner">⏳</span> 上传中…';
+      try {
+        const fd = new FormData();
+        fd.append('file', file);
+        const r = await fetch('/api/mobile-upload', { method: 'POST', body: fd });
+        if (r.ok) {
+          st.className = 'ok';
+          st.textContent = '✓ 已发送！在电脑上看结果吧';
+        } else {
+          throw new Error('upload failed');
+        }
+      } catch {
+        st.className = 'err';
+        st.textContent = '上传失败，请重试';
+      }
+    }
+
+    document.getElementById('camInput').onchange = e => pick(e.target.files[0]);
+    document.getElementById('galInput').onchange = e => pick(e.target.files[0]);
+  </script>
+</body>
+</html>
